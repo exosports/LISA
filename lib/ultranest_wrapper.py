@@ -34,8 +34,12 @@ def driver(params):
     sampler.print_results()
 
     # Posterior and best parameters
-    outp  = sampler.results['samples'].T
     bestp = sampler.results['maximum_likelihood']['point']
+    outp  = sampler.results['samples']
+    if params["kll"] is not None:
+        for i in range(outp.shape[0]):
+            params["kll"].update(params["model"](outp[i], fullout=True))
+    outp = outp.T
 
     # Plotting
     sampler.plot_corner()
