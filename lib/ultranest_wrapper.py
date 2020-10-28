@@ -1,5 +1,5 @@
 """
-Wrapper for UltraNest algorithm of Buchner (2014, 2019).
+Wrapper for UltraNest algorithm of Buchner (2014, 2016, 2019).
 
 driver(): executes the inference
 """
@@ -16,7 +16,9 @@ def driver(params):
 
     Inputs
     ------
-    params: dict. Dictionary of input parameters.
+    params: dict. Dictionary of input parameters.  Must include an entry for 
+                  kll, loglike, model, outputdir, pnames, and prior.
+                  See user manual for descriptions.
 
     Outputs
     -------

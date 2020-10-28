@@ -9,6 +9,7 @@ dependencies:
   - numpy=1.16.2
   - python=3.7.2
   - yaml=0.1.7
+  - h5py
   - multinest
   - pymultinest
   - ultranest

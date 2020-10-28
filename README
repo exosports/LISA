@@ -29,6 +29,15 @@ the following sampling methods are available:
                                 (https://github.com/JohannesBuchner/PyMultiNest)
     UltraNest (Buchner 2014, 2019; https://github.com/JohannesBuchner/UltraNest)
 
+LISA comes with complete documentation as well as a user manual to assist 
+in its usage.  Users can find the latest LISA User Manual at 
+https://exosports.github.io/LISA/doc/LISA_User_Manual.html.
+
+LISA is an open-source project that welcomes improvements from the community 
+to be submitted via pull requests on Github.  To be accepted, such improvements 
+must be generally consistent with the existing coding style, and all changes 
+must be updated in associated documentation.
+
 LISA is released under a Reproducible Research License.  Users are free to 
 use the software for personal reasons.  Users publishing results from LISA 
 or modified versions of it in a peer-reviewed journal are required to publicly 
@@ -44,8 +53,8 @@ LISA contains various files and directories, described here.
 doc/            - Contains documentation for LISA.  The User Manual contains 
                   the information in the README with more detail, as well as a 
                   walkthrough for setup and running an example.
-environment.yml - Contains all required packages (w/ versions) for LISA.
-example/        - Contains example of executing LISA.
+environment.yml - Contains the required packages for LISA.
+example/        - Contains examples of executing LISA.
 LISA.py         - The executable driver for LISA. Accepts a configuration file.
 lib/            - Contains the wrappers for sampling algorithms.
   demc_wrapper.py      - Wrapper for MC3's DEMC algorithm.
@@ -66,6 +75,8 @@ Installation
 ============
 After recursively cloning the repo, users must compile MC3. 
 Do so by entering
+    make all
+or
     make mc3
 into the terminal.
 
@@ -74,10 +85,21 @@ To build the supplied conda environment, enter
 and activate it:
     conda activate lisa
 
+You are now ready to use LISA!
+
 
 Executing LISA
 ===============
-TBD
+LISA is designed to be imported into existing projects.  The main LISA.py file 
+contains a function, run(), which functions as the interface between a project 
+and the Bayesian samplers.  Run takes 2 arguments: the sampling algorithm as 
+a string (demc, snooker, multinest, or ultranest), and a dictionary of the 
+parameters for the sampler.  It will then execute the inference, produce some 
+plots, and return the posterior and best-fit parameters.  For details on the 
+sampler parameters, see the user manual.
+
+For examples of how to incorporate LISA into your project, see the example/ 
+directory.
 
 
 Versions
@@ -92,6 +114,7 @@ versions of packages:
  - MULTINEST 3.10
  - PyMultiNest 2.9
  - UltraNest 2.2.1
+ - h5py 2.9.0
 
 
 Be kind

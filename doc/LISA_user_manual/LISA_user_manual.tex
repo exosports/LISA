@@ -1,0 +1,342 @@
+% LISA User Manual
+%
+% Please note this document will be automatically compiled and hosted online
+% after each commit to master. Because of this, renaming or moving the
+% document should be done carefully. To see the compiled document, go to
+% https://exosports.github.io/LISA/doc/LISA_User_Manual.html
+
+\documentclass[letterpaper, 12pt]{article}
+\input{top-LISA_user_manual}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+\textsc{\LARGE University of Central Florida}\\[1.5cm]
+
+% Title
+\rule{\linewidth}{0.5mm} \\[0.4cm]
+{ \huge \bfseries LISA Users Manual \\[0.4cm] }
+\rule{\linewidth}{0.5mm} \\[1.0cm]
+
+\textsc{\Large Large-selection Interface for Sampling Algorithms}\\[1.5cm]
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft}
+\large
+\emph{Authors:} \\
+Michael D. \textsc{Himes} \\
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr.~Joseph \textsc{Harrington}
+\end{flushright}
+\end{minipage}
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Team Members}
+\label{sec:team}
+
+\begin{itemize}
+\item \href{https://github.com/mdhimes/}{Michael Himes}%
+  \footnote{https://github.com/mdhimes/}, University of
+  Central Florida (mhimes@knights.ucf.edu)
+\item Joseph Harrington, University of Central Florida
+\end{itemize}
+
+\section{Introduction}
+\label{sec:theory}
+
+\noindent This document describes LISA, the Large-selection Interface for 
+Sampling Algorithms.  LISA provides a unified interface for different 
+Bayesian samplers, both Markov chain Monte Carlo (MCMC) and nested sampling 
+(NS).  
+
+Presently, LISA supports the DEMC algorithm of ter Braak (2006), DEMCzs of 
+ter Braak \& Vrugt (2008), MultiNest of Feroz et al. (2008), and UltraNest of 
+Buchner (2016).  We welcome users to contribute interfaces for additional 
+algorithms via a pull request on Github.
+
+The detailed LISA code documentation and User Manual\footnote{Most recent version of the manual available at 
+\href{https://exosports.github.io/LISA/doc/LISA_User_Manual.html}{https://exosports.github.io/LISA/doc/LISA\_User\_Manual.html}} 
+are provided with the package to assist users in its usage. 
+For additional support, contact the lead author (see Section \ref{sec:team}).
+
+LISA is released under the Reproducible Research Software License.  
+For details, see \\
+\href{https://planets.ucf.edu/resources/reproducible-research/software-license/}{https://planets.ucf.edu/resources/reproducible-research/software-license/}.
+\newline
+
+\noindent The LISA package is organized as follows: \newline
+% The framebox and minipage are necessary because dirtree kills the
+% indentation.
+\noindent\framebox{\begin{minipage}[t]{0.97\columnwidth}%
+\dirtree{%
+ .1 LISA. 
+ .2 doc.
+ .2 example.
+ .2 lib. 
+ .2 modules. 
+ .3 MCcubed. 
+}
+\end{minipage}}
+\vspace{0.7cm}
+% \newline is not working here, therefore I use vspace.
+% (because dirtree is such a pain in the ass)
+
+\section{Installation}
+\label{sec:installation}
+
+\subsection{System Requirements}
+\label{sec:requirements}
+
+\noindent LISA was developed on a Linux machine using the following 
+versions of packages:
+
+\begin{itemize}
+\item Python 3.7.2
+\item Numpy 1.16.2
+\item Matplotlib 3.0.2
+\item Scipy 1.2.1
+\end{itemize}
+
+\noindent It utilizes the most up-to-date versions of MCcubed (submodule), 
+PyMultiNest, and UltraNest.
+
+
+\subsection{Install and Compile}
+\label{sec:install}
+
+\noindent To begin, obtain the latest stable version of LISA.  
+
+\noindent First, decide on a local directory to hold LISA.  Let the path to this directory 
+be `LISA'.  Now, clone the repository:
+\begin{verbatim}
+git clone --recursive https://github.com/exosports/LISA LISA/
+cd LISA/
+\end{verbatim}
+
+\noindent LISA contains a file to easily build a conda environment capable of 
+executing the software.  Create the environment via
+
+\begin{verbatim}
+conda env create -f environment.yml
+\end{verbatim}
+
+\noindent Then, activate the environment:
+
+\begin{verbatim}
+conda activate lisa
+\end{verbatim}
+
+\noindent Now, build the submodules:
+
+\begin{verbatim}
+make all
+\end{verbatim}
+
+\noindent Alternatively, `make mc3' accomplishes the same thing.
+
+\noindent You are now ready to run LISA.
+
+
+\section{Example}
+\label{sec:example}
+
+The following script will walk a user through using LISA for a basic quadratic 
+fit.
+
+\noindent To begin, copy the requisite files to a directory parallel to LISA. 
+Beginning from LISA/, 
+\begin{verbatim}
+mkdir ../run
+cp -a ./example/* ../run/.
+cd ../run
+\end{verbatim}
+
+\noindent Make your test data.  Execute the provided script with 
+desired parameters.  For example, data following \math{3x^2 - x + 2} 
+would be created via
+\begin{verbatim}
+./make_data.py 3 -1 2
+\end{verbatim}
+\noindent This will produce true.npy, data.npy, uncert.npy, and params.npy, 
+which contain the true data, noisy data, uncertainty on each data point, and 
+the true parameters, respectively.  The x-axis is assumed to be the integers 
+from -5 to 5, inclusive, and the uncertainty is assumed to be the square root 
+of the true data.
+
+\noindent Now, execute LISA for each of the samplers:
+
+\begin{verbatim}
+./demc_example.py
+./snooker_example.py
+./multinest_example.py
+./ultranest_example.py
+\end{verbatim}
+
+\noindent Each will produce some output files (logs, plots, etc.) in appropriately-named 
+subdirectories.
+
+
+\section{Program Inputs}
+\label{sec:inputs}
+
+LISA's design as an importable package allows for convenient usage in existing 
+codes.  Users interact with LISA through its \tt{run} function, which takes two 
+arguments: a string of the sampling algorithm, and a dictionary of parameters.
+
+\subsection{Sampling Algorithm}
+
+LISA currently supports 4 Bayesian sampling algorithms:
+\begin{itemize}
+\item demc   : DEMC MCMC algorithm of ter Braak (2006)
+\item snooker  : DEMCzs MCMC algorithm of ter Braak & Vrugt (2008)
+\item multinest: MultiNest NS algorithm of Feroz et al. (2008)
+\item ultranest: UltraNest NS algorithm of Buchner (2014, 2016, 2019).
+\end{itemize}
+
+\noindent The choice of sampling algorithm also dictates which entries 
+are used from the parameter dictionary.  Each sampler's inputs are 
+listed in the following subsections.
+
+\subsubsection{DEMC \& DEMCzs}
+\begin{itemize}
+\item burnin
+\item data
+\item flog
+\item fsavefile
+\item fsavemodel
+\item func
+\item hsize (only DEMCzs)
+\item indparams
+\item nchains
+\item niter
+\item outputdir
+\item pinit
+\item pmax
+\item pmin
+\item pnames
+\item pstep
+\item savefile
+\item thinning
+\item truepars
+\item uncert
+\end{itemize}
+
+\subsubsection{MultiNest \& UltraNest}
+\begin{itemize}
+\item kll
+\item loglike
+\item model
+\item outputdir
+\item pnames
+\item prior
+\item pstep
+\item savefile
+\end{itemize}
+
+
+\subsection{Parameter Dictionary}
+
+Users are only required to specify the relevant parameters listed in 
+the previous section.  Each parameter is described below, alphabetically.
+To utilize default values, do not include that key in the dictionary.
+
+\begin{itemize}
+\item burnin: int. Number of burned iterations.
+\item data: array, Numpy binary. Measured data for inference. Must be Numpy 
+                                 array or a path to a .NPY file.
+\item flog: str.   /path/to/log file.
+\item fsavefile: str. Filename to store parameters explored.
+\item fsavemodel: str. Filename to store models, corresponding to the parameters.
+\item func: object. Function to be evaluated at each MCMC step.
+\item hsize: int. Number of samples to seed the phase space (DEMCzs only).
+\item indparams: list. Additional parameters needed by `func`.
+\item kll: object.  Datasketches KLL object, for model quantiles.
+                    Use None if not desired or if Datasketches is not installed.
+                    Default: None
+\item loglike: object. Function defining the log likelihood.
+\item model: object. Function defining the forward model.
+\item nchains: int. Number of parallel samplers. Default: 1
+\item niter: int. Total number of iterations.
+\item outputdir: str. path/to/directory where output will be saved.
+\item pinit: array. Initial parameters for MCMC.
+\item pmax: array. Maximum value for each model parameter.
+\item pmin: array. Minimum value for each model parameter.
+\item pnames: array. Name of each parameter (can use some LaTeX if desired).
+\item pstep: array. Step size for each parameter.  For DEMC \& variants, only 
+                    matters for the initial samples, as step size is automatically adjusted.
+                    For NS, only used to determine any constant parameters.
+\item savefile: str. Prefix for the plots that will be saved. Default: empty string
+\item thinning: int. Thinning factor for the posterior. Default: 1
+\item truepars: array. Known true values for the model parameters.  
+                       If unknown, use None.  Default: None
+\item uncert: array, Numpy binary. Assumed uncertainties for inference. Must be 
+                                   Numpy array or a path to a .NPY file.
+\end{itemize}
+
+
+\section{Program Outputs}
+\label{sec:outputs}
+
+LISA produces different output files depending on the chosen algorithm.
+Regardless of algorithm, LISA returns 2 arrays and produces 3 plots.
+
+\subsection{Returns}
+\begin{itemize}
+\item outp: array. Output posterior.
+\item bestp: array. Best-fit parameters.
+\end{itemize}
+
+\subsection{Output Files}
+\begin{itemize}
+\item TODO
+\end{itemize}
+
+
+\section{Be Kind}
+\label{sec:bekind}
+Please cite this paper if you found this package useful for your
+research:
+
+\begin{itemize}
+\item Himes et al. (2020), submitted to PSJ.
+\end{itemize}
+
+\begin{verbatim}
+@article{HimesEtal2020psjMARGEHOMER,
+   author = {{Himes}, Michael D. and {Harrington}, Joseph and {Cobb}, Adam D. and {G{\"u}ne{\textcommabelow s} Baydin}, At{\i}l{\i}m and {Soboczenski}, Frank and
+         {O'Beirne}, Molly D. and {Zorzan}, Simone and
+         {Wright}, David C. and {Scheffer}, Zacchaeus and
+         {Domagal-Goldman}, Shawn D. and {Arney}, Giada N.},
+    title = "Accurate Machine Learning Atmospheric Retrieval via a Neural Network Surrogate Model for Radiative Transfer",
+  journal = {PSJ},
+     year = 2020,
+    pages = {submitted to PSJ}
+}
+\end{verbatim}
+
+\noindent Thanks!
+
+% \section{Further Reading}
+% \label{sec:furtherreading}
+
+% TBD: Add papers here.
+
+
+\end{document}

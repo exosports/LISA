@@ -5,8 +5,15 @@ run(): execute a call to a sampler
 """
 
 import sys, os
+import numpy as np
+
+mcpdir = os.path.join(os.path.dirname(__file__), 'modules', 'MCcubed', 
+                                                 'MCcubed', 'plots')
+sys.path.append(mcpdir)
+import mcplots as mcp
+
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
-# driver imported in run()
+# driver imported below in run()
 
 
 def run(alg, params):
@@ -16,10 +23,9 @@ def run(alg, params):
     Inputs
     ------
     alg   : string. Sampling algorithm to use.
-                    Options: snooker, demc
+                    Options: demc, snooker, multinest, ultranest
     params: dict.   Parameters for the sampling algorithm.
-                    For a list of parameters, see the algorithm's documentation
-                    in lib/
+                    For a list & description of parameters, see the user manual.
 
     Outputs
     -------
@@ -28,14 +34,28 @@ def run(alg, params):
 
     Examples
     --------
+    See the example/ directory.
     
     """
+    # Check input types are correct
     if type(alg) != str:
         raise Exception("alg argument must be a string. " + \
-                        "See docstring for options.")
+                        "See docstring or user manual for options.")
     if type(params) != dict:
         raise Exception("params argument must be a dictionary. " + \
-                        "See alg's documentation in lib/ for options.")
+                        "See user manual for dictionary keys.")
+
+    # Add defaults if not given
+    if 'thinning' not in params.keys():
+        params['thinning'] = 1
+    if 'nchains' not in params.keys():
+        params['nchains'] = 1
+    if 'savefile' not in params.keys():
+        params['savefile'] = ''
+    if 'truepars' not in params.keys():
+        params['truepars'] = None
+    if 'kll' not in params.keys():
+        params['kll'] = None
 
     # Import relevant driver -- this avoids needing to load all of them at once
     if alg == 'demc':
@@ -46,9 +66,31 @@ def run(alg, params):
         from multinest_wrapper import driver
     elif alg == 'ultranest':
         from ultranest_wrapper import driver
+    else:
+        raise ValueError("The supplied algorithm does not exist in LISA.\n" + \
+                         "Options: demc, snooker, multinest, ultranest\n"   + \
+                         "Received: " + alg)
 
-    out = driver(params)
+    # Run the inference
+    outp, bestp = driver(params)
 
-    return out
+    # Produce plots
+    pnames = np.asarray(params['pnames'])
+
+    mcp.trace(outp, parname=pnames[params['pstep']>0], thinning=params['thinning'], 
+              sep=np.size(outp[0]//params['nchains']), 
+              savefile=os.path.join(params['outputdir'], 
+                                    params['savefile']+"trace.png"),
+              truepars=params['truepars'])
+    mcp.histogram(outp, parname=pnames[params['pstep']>0], thinning=params['thinning'], 
+                  savefile=os.path.join(params['outputdir'], 
+                                        params['savefile']+"posterior.png"),
+                  truepars=params['truepars'])
+    mcp.pairwise(outp, parname=pnames[params['pstep']>0], thinning=params['thinning'], 
+                 savefile=os.path.join(params['outputdir'], 
+                                       params['savefile']+"pairwise.png"),
+                 truepars=params['truepars'])
+
+    return outp, bestp
 
 

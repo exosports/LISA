@@ -16,7 +16,9 @@ def driver(params):
 
     Inputs
     ------
-    params: dict. Dictionary of input parameters.
+    params: dict. Dictionary of input parameters.  Must include an entry for 
+                  kll, loglike, model, outputdir, pnames, prior, and pstep.
+                  See user manual for descriptions.
 
     Outputs
     -------
@@ -67,14 +69,14 @@ def driver(params):
         p.plot_modes_marginal(i, with_ellipses = True, with_points = False)
         plt.ylabel("Probability")
         plt.xlabel(parameters[i])
-        plt.savefig(os.path.join(params["outputdir"], outfile), format='pdf', bbox_inches='tight')
+        plt.savefig(outfile, format='pdf', bbox_inches='tight')
         plt.close()
         
         outfile = '%s-mode-marginal-cumulative-%d.pdf' % (a.outputfiles_basename,i)
         p.plot_modes_marginal(i, cumulative = True, with_ellipses = True, with_points = False)
         plt.ylabel("Cumulative probability")
         plt.xlabel(parameters[i])
-        plt.savefig(os.path.join(params["outputdir"], outfile), format='pdf', bbox_inches='tight')
+        plt.savefig(outfile, format='pdf', bbox_inches='tight')
         plt.close()
 
     return outp, bestp
