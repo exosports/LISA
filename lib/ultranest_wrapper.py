@@ -30,14 +30,14 @@ def driver(params):
                                               params["loglike"], 
                                               params["prior"], 
                                               log_dir=params["outputdir"], 
-                                              vectorized=False)
+                                              vectorized=True)
     # Run it
     out = sampler.run(min_ess=params["min_ess"], max_iters=params["max_iters"], 
                       min_num_live_points=params["min_num_live_points"])
     sampler.print_results()
 
     # Posterior and best parameters
-    bestp = sampler.results['maximum_likelihood']['point']
+    bestp = np.array(sampler.results['maximum_likelihood']['point'])
     outp  = sampler.results['samples']
     if params["kll"] is not None:
         for i in range(outp.shape[0]):
