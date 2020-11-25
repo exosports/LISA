@@ -56,6 +56,12 @@ def run(alg, params):
         params['truepars'] = None
     if 'kll' not in params.keys():
         params['kll'] = None
+    if 'min_ess' not in params.keys():
+        params['min_ess'] = 400
+    if 'min_num_live_points' not in params.keys():
+        params['min_num_live_points'] = 400
+    if 'max_iters' not in params.keys():
+        params['max_iters'] = None
 
     # Import relevant driver -- this avoids needing to load all of them at once
     if alg == 'demc':

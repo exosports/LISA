@@ -32,7 +32,8 @@ def driver(params):
                                               log_dir=params["outputdir"], 
                                               vectorized=False)
     # Run it
-    out = sampler.run()
+    out = sampler.run(min_ess=params["min_ess"], max_iters=params["max_iters"], 
+                      min_num_live_points=params["min_num_live_points"])
     sampler.print_results()
 
     # Posterior and best parameters
