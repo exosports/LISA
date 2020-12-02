@@ -62,6 +62,10 @@ def run(alg, params):
         params['min_num_live_points'] = 400
     if 'max_iters' not in params.keys():
         params['max_iters'] = None
+    if 'frac_remain' not in params.keys():
+        params['frac_remain'] = 0.01
+    if 'Lepsilon' not in params.keys():
+        params['Lepsilon'] = 0.001
 
     # Import relevant driver -- this avoids needing to load all of them at once
     if alg == 'demc':

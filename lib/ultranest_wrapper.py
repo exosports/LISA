@@ -33,7 +33,9 @@ def driver(params):
                                               vectorized=True)
     # Run it
     out = sampler.run(min_ess=params["min_ess"], max_iters=params["max_iters"], 
-                      min_num_live_points=params["min_num_live_points"])
+                      min_num_live_points=params["min_num_live_points"], 
+                      frac_remain=params["frac_remain"], 
+                      Lepsilon=params["Lepsilon"])
     sampler.print_results()
 
     # Posterior and best parameters
