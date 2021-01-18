@@ -66,9 +66,14 @@ Sampling Algorithms.  LISA provides a unified interface for different
 Bayesian samplers, both Markov chain Monte Carlo (MCMC) and nested sampling 
 (NS).  \newline
 
-\noindent Presently, LISA supports the DEMC algorithm of ter Braak (2006), DEMCzs of 
-ter Braak \& Vrugt (2008), MultiNest of Feroz et al. (2008), and UltraNest of 
-Buchner (2016).  We welcome users to contribute wrappers for additional 
+\noindent Presently, LISA supports the 
+DEMC algorithm of ter Braak (2006), 
+DEMCzs of ter Braak \& Vrugt (2008, `snooker'), 
+MultiNest of Feroz et al. (2008) via PyMultiNest (Buchner et al. 2014), 
+UltraNest of Buchner (2016), 
+dynesty of Speagle (2019), and 
+DNest4 of Brewer & Foreman-Mackey (2018).  
+We welcome users to contribute wrappers for additional 
 algorithms via a pull request on Github. \newline
 
 \noindent The detailed LISA code documentation and User Manual\footnote{Most recent version of the manual available at 
@@ -182,6 +187,8 @@ of the true data.
 
 \begin{verbatim}
 ./demc_example.py
+./dnest4_example.py
+./dynesty_example.py
 ./snooker_example.py
 ./multinest_example.py
 ./ultranest_example.py
@@ -200,9 +207,11 @@ arguments: a string of the sampling algorithm, and a dictionary of parameters.
 
 \subsection{Sampling Algorithm}
 
-LISA currently supports 4 Bayesian sampling algorithms:
+LISA currently supports 6 Bayesian sampling algorithms:
 \begin{itemize}
 \item demc   : DEMC MCMC algorithm of ter Braak (2006)
+\item dnest4 : Diffusive NS implementation of Brewer & Foreman-Mackey (2018)
+\item dynesty: Dynamic NS of Speagle (2019)
 \item snooker  : DEMCzs MCMC algorithm of ter Braak \& Vrugt (2008)
 \item multinest: MultiNest NS algorithm of Feroz et al. (2008)
 \item ultranest: UltraNest NS algorithm of Buchner (2014, 2016, 2019).
@@ -251,6 +260,11 @@ listed in the following subsections.
 \item savefile
 \end{itemize}
 
+\subsubsection{dynesty}
+TODO
+
+\subsubsection{DNest4}
+TODO
 
 \subsection{Parameter Dictionary}
 

@@ -93,10 +93,10 @@ Executing LISA
 LISA is designed to be imported into existing projects.  The main LISA.py file 
 contains a function, run(), which acts as the interface between a project 
 and the Bayesian samplers.  Run takes 2 arguments: the sampling algorithm as 
-a string (demc, snooker, multinest, or ultranest), and a dictionary of the 
-parameters for the sampler.  It will then execute the inference, produce some 
-plots, and return the posterior and best-fit parameters.  For details on the 
-sampler parameters, see the user manual.
+a string (demc, dnest4, dynesty, snooker, multinest, or ultranest), 
+and a dictionary of the parameters for the sampler.  It will then execute the 
+inference, produce some plots, and return the posterior and best-fit 
+parameters.  For details on the sampler parameters, see the user manual.
 
 For examples of how to incorporate LISA into your project, see the example/ 
 directory.
@@ -104,7 +104,7 @@ directory.
 
 Versions
 ========
-HOMER was developed on a Unix/Linux machine using the following 
+LISA was developed on a Unix/Linux machine using the following 
 versions of packages:
  - Python 3.7.2
  - Numpy 1.16.2
@@ -115,13 +115,15 @@ versions of packages:
  - PyMultiNest 2.9
  - UltraNest 2.2.1
  - h5py 2.9.0
+ - dynesty 1.0.1
+ - dnest4 0.2.4
 
 
 Be kind
 =======
 Please note that this software has not been officially released yet; see the 
 license for some restrictions on its usage prior to release.  Upon release, 
-we will add the relevant citation here, with a Bibtex entry in the User Manual.
+we will add the relevant citation here, with a Bibtex entry.
 
 Thanks!
 
