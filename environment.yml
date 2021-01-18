@@ -13,3 +13,5 @@ dependencies:
   - multinest
   - pymultinest
   - ultranest
+  - dynesty
+  - dnest4

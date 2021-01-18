@@ -91,7 +91,7 @@ You are now ready to use LISA!
 Executing LISA
 ===============
 LISA is designed to be imported into existing projects.  The main LISA.py file 
-contains a function, run(), which functions as the interface between a project 
+contains a function, run(), which acts as the interface between a project 
 and the Bayesian samplers.  Run takes 2 arguments: the sampling algorithm as 
 a string (demc, snooker, multinest, or ultranest), and a dictionary of the 
 parameters for the sampler.  It will then execute the inference, produce some 
@@ -119,7 +119,9 @@ versions of packages:
 
 Be kind
 =======
-Please cite this repo if you found this package useful for your research.
+Please note that this software has not been officially released yet; see the 
+license for some restrictions on its usage prior to release.  Upon release, 
+we will add the relevant citation here, with a Bibtex entry in the User Manual.
 
 Thanks!
 

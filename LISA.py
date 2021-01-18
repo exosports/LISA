@@ -66,20 +66,34 @@ def run(alg, params):
         params['frac_remain'] = 0.01
     if 'Lepsilon' not in params.keys():
         params['Lepsilon'] = 0.001
+    if 'bound' not in params.keys():
+        params['bound'] = 'multi'
+    if 'sample' not in params.keys():
+        params['sample'] = 'auto'
+    if 'bound' not in params.keys():
+        params['bound'] = 'multi'
+    if 'sample' not in params.keys():
+        params['sample'] = 'auto'
+    if 'nlive_init' not in params.keys():
+        params['nlive_init'] = 500
+    if 'nlive_batch' not in params.keys():
+        params['nlive_batch'] = 500
 
     # Import relevant driver -- this avoids needing to load all of them at once
     if alg == 'demc':
-        from demc_wrapper import driver
+        from demc_wrapper      import driver
+    elif alg == 'dynesty':
+        from dynesty_wrapper   import driver
     elif alg == 'snooker':
-        from snooker_wrapper import driver
+        from snooker_wrapper   import driver
     elif alg == 'multinest':
         from multinest_wrapper import driver
     elif alg == 'ultranest':
         from ultranest_wrapper import driver
     else:
         raise ValueError("The supplied algorithm does not exist in LISA.\n" + \
-                         "Options: demc, snooker, multinest, ultranest\n"   + \
-                         "Received: " + alg)
+                         "Options: demc, dynesty, snooker, multinest, " + \
+                         "ultranest\nReceived: " + alg)
 
     # Run the inference
     outp, bestp = driver(params)
@@ -95,7 +109,7 @@ def run(alg, params):
     mcp.histogram(outp, parname=pnames[params['pstep']>0], thinning=params['thinning'], 
                   savefile=os.path.join(params['outputdir'], 
                                         params['savefile']+"posterior.png"),
-                  truepars=params['truepars'])
+                  truepars=params['truepars'], density=True)
     mcp.pairwise(outp, parname=pnames[params['pstep']>0], thinning=params['thinning'], 
                  savefile=os.path.join(params['outputdir'], 
                                        params['savefile']+"pairwise.png"),

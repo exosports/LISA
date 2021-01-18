@@ -64,22 +64,21 @@ Dr.~Joseph \textsc{Harrington}
 \noindent This document describes LISA, the Large-selection Interface for 
 Sampling Algorithms.  LISA provides a unified interface for different 
 Bayesian samplers, both Markov chain Monte Carlo (MCMC) and nested sampling 
-(NS).  
+(NS).  \newline
 
-Presently, LISA supports the DEMC algorithm of ter Braak (2006), DEMCzs of 
+\noindent Presently, LISA supports the DEMC algorithm of ter Braak (2006), DEMCzs of 
 ter Braak \& Vrugt (2008), MultiNest of Feroz et al. (2008), and UltraNest of 
-Buchner (2016).  We welcome users to contribute interfaces for additional 
-algorithms via a pull request on Github.
+Buchner (2016).  We welcome users to contribute wrappers for additional 
+algorithms via a pull request on Github. \newline
 
-The detailed LISA code documentation and User Manual\footnote{Most recent version of the manual available at 
+\noindent The detailed LISA code documentation and User Manual\footnote{Most recent version of the manual available at 
 \href{https://exosports.github.io/LISA/doc/LISA_User_Manual.html}{https://exosports.github.io/LISA/doc/LISA\_User\_Manual.html}} 
 are provided with the package to assist users in its usage. 
-For additional support, contact the lead author (see Section \ref{sec:team}).
+For additional support, contact the lead author (see Section \ref{sec:team}). \newline
 
-LISA is released under the Reproducible Research Software License.  
+\noindent LISA is released under the Reproducible Research Software License.  
 For details, see \\
-\href{https://planets.ucf.edu/resources/reproducible-research/software-license/}{https://planets.ucf.edu/resources/reproducible-research/software-license/}.
-\newline
+\href{https://planets.ucf.edu/resources/reproducible-research/software-license/}{https://planets.ucf.edu/resources/reproducible-research/software-license/}.\newline
 
 \noindent The LISA package is organized as follows: \newline
 % The framebox and minipage are necessary because dirtree kills the
@@ -112,16 +111,15 @@ versions of packages:
 \item Numpy 1.16.2
 \item Matplotlib 3.0.2
 \item Scipy 1.2.1
+\item pymultinest 2.10
+\item ultranest 2.2.2
 \end{itemize}
-
-\noindent It utilizes the most up-to-date versions of MCcubed (submodule), 
-PyMultiNest, and UltraNest.
 
 
 \subsection{Install and Compile}
 \label{sec:install}
 
-\noindent To begin, obtain the latest stable version of LISA.  
+\noindent To begin, obtain the latest stable version of LISA.  \newline
 
 \noindent First, decide on a local directory to hold LISA.  Let the path to this directory 
 be `LISA'.  Now, clone the repository:
@@ -149,7 +147,7 @@ conda activate lisa
 make all
 \end{verbatim}
 
-\noindent Alternatively, `make mc3' accomplishes the same thing.
+\noindent Alternatively, `make mc3' accomplishes the same thing.\newline
 
 \noindent You are now ready to run LISA.
 
@@ -214,7 +212,7 @@ LISA currently supports 4 Bayesian sampling algorithms:
 are used from the parameter dictionary.  Each sampler's inputs are 
 listed in the following subsections.
 
-\subsubsection{DEMC \& DEMCzs}
+\subsubsection{DEMC \& Snooker}
 \begin{itemize}
 \item burnin
 \item data
@@ -242,6 +240,9 @@ listed in the following subsections.
 \begin{itemize}
 \item kll
 \item loglike
+\item max\_iters (optional, UltraNest only)
+\item min\_ess (optional, UltraNest only)
+\item min\_num\_live\_points (optional, UltraNest only)
 \item model
 \item outputdir
 \item pnames
@@ -271,6 +272,9 @@ To utilize default values, do not include that key in the dictionary.
                     Use None if not desired or if Datasketches is not installed.
                     Default: None
 \item loglike: object. Function defining the log likelihood.
+\item max\_iters: int. (optional) Maximum number of iterations for UltraNest.
+\item min\_ess: int. (optional) Minimum effective sample size (ESS) for UltraNest.
+\item min\_num\_live\_points: int. (optional) Minimum number of live points for UltraNest.
 \item model: object. Function defining the forward model.
 \item nchains: int. Number of parallel samplers. Default: 1
 \item niter: int. Total number of iterations.
@@ -283,7 +287,7 @@ To utilize default values, do not include that key in the dictionary.
                     matters for the initial samples, as step size is automatically adjusted.
                     For NS, only used to determine any constant parameters.
 \item savefile: str. Prefix for the plots that will be saved. Default: empty string
-\item thinning: int. Thinning factor for the posterior. Default: 1
+\item thinning: int. Thinning factor for the posterior (keep every N iterations). Example: a thinning factor of 3 will keep every third iteration.  Only recommended when the computed posterior is extremely large; not recommended for any nested sampling algorithms.  Default: 1
 \item truepars: array. Known true values for the model parameters.  
                        If unknown, use None.  Default: None
 \item uncert: array, Numpy binary. Assumed uncertainties for inference. Must be 
@@ -308,28 +312,42 @@ Regardless of algorithm, LISA returns 2 arrays and produces 3 plots.
 \item TODO
 \end{itemize}
 
+\section{FAQ}
+
+This section will cover some frequently asked questions about using LISA.  
+Have a question that isn't answered below?  Please send it to the corresponding 
+author so we can add it to this section! \newline
+
+\noindent \textbf{Q: What is effective sample size (ESS) and why should I care?}
+A: As Bayesian samplers explore a phase space, the subsequent sets of parameters
+are based in part on earlier sets of parameters.  Thus, iterations are 
+correlated.  After some number of samples, new iterations will ``forget'' some 
+of the earlier samples.  Yet, we are really interested in the number of 
+independent samples, as that will inform how thoroughly the phase space has 
+been explored (taking a bunch of correlated samples doesn't give us much new 
+information!).  The number of iterations necessary before a new sample is 
+independent of a given earlier sample (steps per effective independent sample, 
+SPEIS) informs the ESS.  For example, if we have 20,000 samples, but a given 
+sample is correlated with the previous 100 samples, then the ESS is just 
+20000 / 100, or 200.  The ESS value, in turn, informs us of the accuracy of 
+a credible region determined from the posterior distribution.  Without 
+providing a detailed proof (interested readers can find it in Harrington et 
+al. 2020, Appendix A), the relationship between the ESS, a credible region 
+\math{\hat{C}}, and the uncertainty on the credible region 
+\math{s\sb{\hat{C}}} is
+\begin{equation}
+{\rm ESS} \approx \frac{\hat{C}(1-\hat{C})}{s\sbp{\hat{C}}{2}}.
+\end{equation}
+Thus, for a 0.5\% uncertainty on the 95.45\% region (2\math{\sigma} for a 
+Gaussian), an ESS \math{\approx} 1700 is required.  A SPEIS of 1000 would 
+thus require 1.7 million iterations!
+
 
 \section{Be Kind}
 \label{sec:bekind}
-Please cite this paper if you found this package useful for your
-research:
-
-\begin{itemize}
-\item Himes et al. (2020), submitted to PSJ.
-\end{itemize}
-
-\begin{verbatim}
-@article{HimesEtal2020psjMARGEHOMER,
-   author = {{Himes}, Michael D. and {Harrington}, Joseph and {Cobb}, Adam D. and {G{\"u}ne{\textcommabelow s} Baydin}, At{\i}l{\i}m and {Soboczenski}, Frank and
-         {O'Beirne}, Molly D. and {Zorzan}, Simone and
-         {Wright}, David C. and {Scheffer}, Zacchaeus and
-         {Domagal-Goldman}, Shawn D. and {Arney}, Giada N.},
-    title = "Accurate Machine Learning Atmospheric Retrieval via a Neural Network Surrogate Model for Radiative Transfer",
-  journal = {PSJ},
-     year = 2020,
-    pages = {submitted to PSJ}
-}
-\end{verbatim}
+Please note that this software has not been officially released yet; see the 
+license for some restrictions on its usage prior to release.  Upon release, 
+we will add the relevant citation here, with a Bibtex entry.
 
 \noindent Thanks!
 
