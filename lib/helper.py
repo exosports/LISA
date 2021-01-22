@@ -57,10 +57,10 @@ class BaseSampler(object):
                             'Beware: the file may be extremely large ' + \
                             'if the model output has high dimensionality.' + \
                             'Default: None', 
-        'func' : 'object. Function to be evaluated at each MCMC step.', 
         'frac_remain' : 'float. UltraNest only. Sets the fraction ' + \
                                'remainder when integrating the posterior.', 
-        'hsize' : 'int. Number of samples to seed the phase space.', 
+        'hsize' : 'int. Number of samples per chain to seed the phase ' + \
+                       'space.  Default: 10', 
         'indparams' : 'list. Additional parameters needed by `func`.', 
         'kll' : 'object.  Datasketches KLL object, for model quantiles. ' + \
                          'Use None if not desired or if Datasketches is ' + \
@@ -70,8 +70,6 @@ class BaseSampler(object):
                             'within Lepsilon tolerance."', 
         'loglike' : 'object. Function defining the log likelihood.', 
         'min_ess' : 'int. Minimum effective sample size (ESS). Default: 500', 
-        'min_num_live_points' : 'int. Minimum number of live points.  ' + \
-                                     'Default: 400', 
         'model' : 'object. Function defining the forward model.', 
         'modelper' : 'int. Sets how to split `fsavemodel` into subfiles.  ' + \
                           'If 0, does not split.  If >0, saves out every ' + \

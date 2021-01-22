@@ -35,13 +35,15 @@ if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
 # Run it
-samp, outp, bestp = LISA.run('demc', burnin=4000, data=data, 
-                             fbestp='output_bestp.npy', 
-                             fext='.png', flog='MCMC.log', 
-                             fsavefile='output_posterior.npy', fsavemodel=None, 
-                             func=func, indparams=[], kll=None, modelper=0, 
-                             nchains=10, niter=100000, 
-                             outputdir=outputdir, 
-                             pinit=pinit, pmax=pmax, pmin=pmin, pnames=pnames, 
-                             pstep=pstep, thinning=1, truepars=pars, 
-                             uncert=uncert, verb=1)
+samp = LISA.run('demc', burnin=4000, data=data, 
+                fbestp='output_bestp.npy', 
+                fext='.png', flog='MCMC.log', 
+                fsavefile='output_posterior.npy', fsavemodel=None, 
+                indparams=[], kll=None, model=func, modelper=0, 
+                nchains=10, niter=100000, 
+                outputdir=outputdir, 
+                pinit=pinit, pmax=pmax, pmin=pmin, pnames=pnames, 
+                pstep=pstep, thinning=1, truepars=pars, 
+                uncert=uncert, verb=1)
+
+

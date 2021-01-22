@@ -43,11 +43,11 @@ if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
 # Run it
-samp, outp, bestp = LISA.run('dynesty', fbestp='output_bestp.npy', 
-                             fext='.png', fsavefile='output_posterior.npy', 
-                             kll=None, loglike=loglike, model=func, 
-                             niter=100000, nlive=500, outputdir=outputdir, 
-                             pnames=pnames, prior=prior, pstep=pstep, 
-                             truepars=pars, verb=1)
+samp = LISA.run('dynesty', fbestp='output_bestp.npy', 
+                fext='.png', fsavefile='output_posterior.npy', 
+                kll=None, loglike=loglike, model=func, 
+                niter=100000, nlive=500, outputdir=outputdir, 
+                pnames=pnames, prior=prior, pstep=pstep, 
+                truepars=pars, verb=1)
 
 

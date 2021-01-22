@@ -23,9 +23,9 @@ class Sampler(BaseSampler):
         # General info about the algorithm
         self.alg = 'ultranest' #name
         self.reqpar = ['loglike', 'model', 'nlive', 'outputdir', 
-                       'pnames', 'prior', 'pstep'] #required parameters
+                       'prior', 'pstep'] #required parameters
         self.optpar = ['dlogz', 'fbestp', 'fext', 'frac_remain', 'fsavefile', 
-                       'kll', 'Lepsilon', 'min_ess', 'niter', 
+                       'kll', 'Lepsilon', 'min_ess', 'niter', 'pnames', 
                        'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
@@ -131,55 +131,9 @@ class Sampler(BaseSampler):
                 np.save(self.fsavefile, self.outp)
             if self.fbestp is not None:
                 np.save(self.fbestp, self.bestp)
-            return self.outp, self.bestp
         else:
             if self.verb:
                 print("Sampler is not fully prepared to run. " + \
                       "Correct the above errors and try again.")
-
-
-
-def driver(params):
-    """
-    UltraNest algorithm of Buchner (2014, 2019)
-
-    Inputs
-    ------
-    params: dict. Dictionary of input parameters.  Must include an entry for 
-                  kll, loglike, model, outputdir, pnames, and prior.
-                  See user manual for descriptions.
-
-    Outputs
-    -------
-    outp : array. Each set of accepted parameter values.
-    bestp: array. Best parameter values.
-    """
-    # Setup the sampler
-    sampler = ultranest.ReactiveNestedSampler(params["pnames"], 
-                                              params["loglike"], 
-                                              params["prior"], 
-                                              log_dir=params["outputdir"], 
-                                              vectorized=True)
-    # Run it
-    out = sampler.run(min_ess=params["min_ess"], max_iters=params["max_iters"], 
-                      min_num_live_points=params["min_num_live_points"], 
-                      frac_remain=params["frac_remain"], 
-                      Lepsilon=params["Lepsilon"])
-    sampler.print_results()
-
-    # Posterior and best parameters
-    bestp = np.array(sampler.results['maximum_likelihood']['point'])
-    outp  = sampler.results['samples']
-    if params["kll"] is not None:
-        for i in range(outp.shape[0]):
-            params["kll"].update(params["model"](outp[i], fullout=True))
-    outp = outp.T
-
-    # Plotting
-    sampler.plot_corner()
-    sampler.plot_run()
-    sampler.plot_trace()
-
-    return outp, bestp
 
 

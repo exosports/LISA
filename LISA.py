@@ -57,12 +57,10 @@ def run(alg, **kwargs):
     Outputs
     -------
     samp : Sampler object, with the supplied **kwargs set.
-    outp : Numpy array. Output posterior.
-    bestp: Numpy array. Best parameters.
     """
     samp = setup(alg, **kwargs)
-    outp, bestp = samp.run()
+    samp.run()
     samp.make_plots()
-    return samp, outp, bestp
+    return samp
 
 
