@@ -12,6 +12,7 @@ sys.path.append('../')
 sys.path.append('../LISA/')
 import LISA
 
+
 # Load the inputs, and true parameters
 data   = np.load('data.npy')
 uncert = np.load('uncert.npy')
@@ -33,21 +34,14 @@ outputdir = "./output_demc/"
 if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
-# Parameter dictionary for LISA
-params = {"data"      : data  , "uncert"    : uncert, 
-          "truepars"  : pars  , "func"      : func,
-          "indparams" : []    , "pnames"    : pnames, 
-          "pinit"     : pinit , "pmin"      : pmin, 
-          "pmax"      : pmax  , "pstep"     : pstep, 
-          "niter"     : 100000, "burnin"    : 4000, 
-          "thinning"  : 1     , "nchains"   : 10, 
-          "savefile"  : ""    , "outputdir" : outputdir, 
-          "fsavefile" : outputdir+"output.npy", 
-          "fsavemodel": "", 
-          "flog"      : outputdir+"MCMC.log"}
-
 # Run it
-outp, bestp = LISA.run('demc', params)
-
-
-
+samp, outp, bestp = LISA.run('demc', burnin=4000, data=data, 
+                             fbestp='output_bestp.npy', 
+                             fext='.png', flog='MCMC.log', 
+                             fsavefile='output_posterior.npy', fsavemodel=None, 
+                             func=func, indparams=[], kll=None, modelper=0, 
+                             nchains=10, niter=100000, 
+                             outputdir=outputdir, 
+                             pinit=pinit, pmax=pmax, pmin=pmin, pnames=pnames, 
+                             pstep=pstep, thinning=1, truepars=pars, 
+                             uncert=uncert, verb=1)

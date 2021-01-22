@@ -12,6 +12,7 @@ sys.path.append('../')
 sys.path.append('../LISA/')
 import LISA
 
+
 # Load the inputs, and true parameters
 data   = np.load('data.npy')
 uncert = np.load('uncert.npy')
@@ -26,7 +27,7 @@ pstep  = np.array([  3.,   3.,   3.]) # "Step" size (used for initial samples)
 # The defined x-axis values corresponding to the data
 x = np.arange(-5, 6)
 
-func = functools.partial(mnf.model, x=x, inD=3)
+func = functools.partial(mnf.model, x=x, inD=len(pnames))
 
 prior = functools.partial(mnf.prior, pmin=pmin, pmax=pmax, pstep=pstep)
 
@@ -38,14 +39,12 @@ outputdir = "./output_multinest/"
 if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
-# Parameter dictionary for LISA
-params = {"prior"  : prior , "loglike" : loglike, 
-          "pnames" : pnames, "pstep"   : pstep  , 
-          "kll"    : None  , "model"   : func   , 
-          "outputdir" : outputdir, 
-          "truepars"  : pars}
-
 # Run it
-outp, bestp = LISA.run('multinest', params)
+samp, outp, bestp = LISA.run('multinest', fbestp='output_bestp.npy', 
+                             fext='.png', fsavefile='output_posterior.npy', 
+                             kll=None, loglike=loglike, model=func, 
+                             niter=100000, nlive=400, outputdir=outputdir, 
+                             pnames=pnames, prior=prior, pstep=pstep, 
+                             truepars=pars, verb=1)
 
 

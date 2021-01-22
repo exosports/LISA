@@ -12,6 +12,7 @@ sys.path.append('../')
 sys.path.append('../LISA/')
 import LISA
 
+
 # Load the inputs, and true parameters
 data   = np.load('data.npy')
 uncert = np.load('uncert.npy')
@@ -41,18 +42,12 @@ outputdir = "./output_dynesty/"
 if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
-# Parameter dictionary for LISA
-params = {"prior"  : prior , "loglike" : loglike, 
-          "pnames" : pnames, "pstep"   : pstep  , 
-          "kll"    : None  , "model"   : func   , 
-          "sample" : 'unif', "bound"   : 'single', 
-          "nlive_init"  : 500, 
-          "nlive_batch" : 1000, 
-          "max_iters"   : 10000, 
-          "outputdir"   : outputdir, 
-          "truepars"    : pars}
-
 # Run it
-outp, bestp = LISA.run('dynesty', params)
+samp, outp, bestp = LISA.run('dynesty', fbestp='output_bestp.npy', 
+                             fext='.png', fsavefile='output_posterior.npy', 
+                             kll=None, loglike=loglike, model=func, 
+                             niter=100000, nlive=500, outputdir=outputdir, 
+                             pnames=pnames, prior=prior, pstep=pstep, 
+                             truepars=pars, verb=1)
 
 

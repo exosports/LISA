@@ -12,6 +12,7 @@ sys.path.append('../')
 sys.path.append('../LISA/')
 import LISA
 
+
 # Load the inputs, and true parameters
 data   = np.load('data.npy')
 uncert = np.load('uncert.npy')
@@ -41,14 +42,13 @@ outputdir = "./output_ultranest/"
 if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
-# Parameter dictionary for LISA
-params = {"prior"  : prior , "loglike" : loglike, 
-          "pnames" : pnames, "pstep"   : pstep  , 
-          "kll"    : None  , "model"   : func   , 
-          "outputdir" : outputdir, 
-          "truepars"  : pars}
-
 # Run it
-outp, bestp = LISA.run('ultranest', params)
+samp, outp, bestp = LISA.run('ultranest', dlogz=0.2, fbestp='output_bestp.npy', 
+                             fext='.png', frac_remain=0.1, 
+                             fsavefile='output_posterior.npy', 
+                             kll=None, loglike=loglike, model=func, 
+                             niter=100000, nlive=500, outputdir=outputdir, 
+                             pnames=pnames, prior=prior, pstep=pstep, 
+                             truepars=pars, verb=1)
 
 
