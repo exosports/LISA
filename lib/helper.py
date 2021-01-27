@@ -25,6 +25,8 @@ class BaseSampler(object):
         self.prepared = False
         self.thinning = 1 #for posterior plots
         self.helpinfo = {
+        'beta' : 'float. DNest 4 only. From their docs: strength of effect ' + \
+                        'to force histogram to equal push.  Default: 100.0', 
         'bound' : 'str. Dynesty only. Option to bound the target ' + \
                        'distribution. Choices: none (sample from unit ' + \
                        'cube), single (one ellipsoid), multi (multiple ' + \
@@ -65,6 +67,8 @@ class BaseSampler(object):
         'kll' : 'object.  Datasketches KLL object, for model quantiles. ' + \
                          'Use None if not desired or if Datasketches is ' + \
                          'not installed.  Default: None', 
+        'lam' : 'float. DNest 4 only. From their docs: backtracking scale ' + \
+                       'length.  Default: 5.0', 
         'Lepsilon' : 'float. UltraNest only. From their docs: "Terminate ' + \
                             'when live point likelihoods are all the same, ' + \
                             'within Lepsilon tolerance."', 
@@ -84,7 +88,15 @@ class BaseSampler(object):
                             'live points used when adding additional ' + \
                             'samples from a nested sampling run within ' + \
                             'each batch."  Default: 500.', 
+        'nlevel' : 'int. DNest4 only. From their docs: Maximum number of ' + \
+                        'levels to create.  Default: 30', 
+        'nlevelint' : 'int. DNest4 only. Number of moves before creating ' + \
+                           'new level. Default: 10000'
+        'nperstep' : 'int. DNest4 only. Number of moves per MCMC ' + \
+                          'iteration.  Default: 10000', 
         'outputdir' : 'str. path/to/directory where output will be saved.', 
+        'perturb' : 'object. DNest4 only. Function that proposes changes ' + \
+                            'to parameter values.',  
         'pinit' : 'array, Numpy binary. For MCMCs, initial parameters for ' + \
                             'samplers.  For nested sampling algorithms, ' + \
                             'values are used for parameters that are held ' + \
@@ -177,6 +189,8 @@ class BaseSampler(object):
         """
         Checks attributes that must be non-negative floats.
         """
+        if type(getattr(self, attr)) == int:
+            setattr(self, attr, float(getattr(self, attr)))
         if getattr(self, attr) is None or getattr(self, attr) < 0 or \
            type(getattr(self, attr)) != float:
             print(attr, "must be a non-negative float.")

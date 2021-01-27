@@ -1,7 +1,7 @@
 """
 Wrapper for DEMC with snooker updating algorithm of ter Braak & Vrugt (2008)
 
-driver(): executes the inference
+Sampler: class to setup and run the inference
 """
 
 import sys, os
@@ -24,6 +24,10 @@ class Sampler(BaseSampler):
                        pinit=None, pmax=None, pmin=None, pnames=None, 
                        pstep=None, thinning=1, truepars=None, uncert=None, 
                        verb=0):
+        """
+        For details on the inputs, instantiate an object `obj` and call 
+        obj.help('parameter'), or see the description in the user manual.
+        """
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm
@@ -45,7 +49,7 @@ class Sampler(BaseSampler):
         self.flog       = flog
         self.fsavefile  = fsavefile
         self.fsavemodel = fsavemodel
-        self.model       = model
+        self.model      = model
         self.hsize      = hsize
         self.indparams  = indparams
         self.kll        = kll
@@ -62,7 +66,7 @@ class Sampler(BaseSampler):
         self.uncert     = uncert
         self.verb       = verb
         if self.verb:
-            print("DEMC sampler initialized")
+            print("Snooker (DEMCzs) sampler initialized")
             print("To view a list of required parameters, print obj.reqpar")
             print("To view a list of optional parameters, print obj.optpar")
             print("For details on any parameter, call " + \

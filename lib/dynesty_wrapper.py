@@ -1,7 +1,7 @@
 """
 Wrapper for dynesty dynamic nested sampling algorithm of Speagle (2019).
 
-driver(): executes the inference
+Sampler: class to setup and run an inference
 """
 
 import sys, os
@@ -19,6 +19,10 @@ class Sampler(BaseSampler):
                        nlive=500, nlive_batch=500, outputdir=None, pnames=None, 
                        prior=None, pstep=None, sample='auto', truepars=None, 
                        verb=0):
+        """
+        For details on the inputs, instantiate an object `obj` and call 
+        obj.help('parameter'), or see the description in the user manual.
+        """
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm
@@ -52,7 +56,7 @@ class Sampler(BaseSampler):
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
-            print("PyMultiNest sampler initialized")
+            print("dynesty sampler initialized")
             print("To view a list of required parameters, print obj.reqpar")
             print("To view a list of optional parameters, print obj.optpar")
             print("For details on any parameter, call " + \

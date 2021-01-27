@@ -1,7 +1,7 @@
 """
 Wrapper for UltraNest algorithm of Buchner (2014, 2016, 2019).
 
-driver(): executes the inference
+Sampler: class to setup and run an inference
 """
 
 import sys, os
@@ -18,6 +18,10 @@ class Sampler(BaseSampler):
                        Lepsilon=0.001, loglike=None, min_ess=500, model=None, 
                        niter=None, nlive=500, outputdir=None, pnames=None, 
                        prior=None, pstep=None, truepars=None, verb=0):
+        """
+        For details on the inputs, instantiate an object `obj` and call 
+        obj.help('parameter'), or see the description in the user manual.
+        """
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm
@@ -50,7 +54,7 @@ class Sampler(BaseSampler):
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
-            print("PyMultiNest sampler initialized")
+            print("UltraNest sampler initialized")
             print("To view a list of required parameters, print obj.reqpar")
             print("To view a list of optional parameters, print obj.optpar")
             print("For details on any parameter, call " + \

@@ -1,7 +1,7 @@
 """
 Wrapper for PyMultiNest algorithm of Buchner (2014).
 
-driver(): executes the inference
+Sampler: class to setup and run an inference
 """
 
 import sys, os
@@ -18,6 +18,10 @@ class Sampler(BaseSampler):
                        loglike=None, model=None, niter=0, nlive=500, 
                        outputdir=None, pnames=None, 
                        prior=None, pstep=None, truepars=None, verb=0):
+        """
+        For details on the inputs, instantiate an object `obj` and call 
+        obj.help('parameter'), or see the description in the user manual.
+        """
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm

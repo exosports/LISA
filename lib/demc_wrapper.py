@@ -1,7 +1,7 @@
 """
 Wrapper for DEMC algorithm of ter Braak (2006)
 
-driver(): executes the inference
+Sampler: class to setup and run an inference
 """
 
 import sys, os
@@ -23,6 +23,10 @@ class Sampler(BaseSampler):
                        outputdir=None, pinit=None, pmax=None, 
                        pmin=None, pnames=None, pstep=None, thinning=1, 
                        truepars=None, uncert=None, verb=0):
+        """
+        For details on the inputs, instantiate an object `obj` and call 
+        obj.help('parameter'), or see the description in the user manual.
+        """
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm
@@ -44,7 +48,7 @@ class Sampler(BaseSampler):
         self.flog       = flog
         self.fsavefile  = fsavefile
         self.fsavemodel = fsavemodel
-        self.model       = model
+        self.model      = model
         self.indparams  = indparams
         self.kll        = kll
         self.nchains    = nchains
