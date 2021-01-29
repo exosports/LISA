@@ -1,5 +1,5 @@
 """
-Wrapper for the polychord algorithm of Handley et al. (2015).
+Wrapper for the polychord algorithm of Handley et al. (2015a, 2015b).
 
 Sampler: class to setup and run an inference
 """
@@ -15,11 +15,10 @@ from helper import BaseSampler
 
 class Sampler(BaseSampler):
     def __init__(self, dlogz=0.1, dumper=None, fbestp='bestp.npy', 
-                       fext='.png', fprefix='run1', fsavefile='output.npy', kll=None, 
-                       loglike=None, model=None, 
-                       nlive=500, nrepeat=None, outputdir=None, pnames=None, 
-                       prior=None, pstep=None, truepars=None, 
-                       verb=0):
+                       fext='.png', fprefix='run1', fsavefile='output.npy', 
+                       kll=None, loglike=None, model=None, nlive=500, 
+                       nrepeat=None, outputdir=None, pnames=None, 
+                       prior=None, pstep=None, truepars=None, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -30,8 +29,8 @@ class Sampler(BaseSampler):
         self.alg = 'polychord' #name
         self.reqpar = ['loglike', 'model', 'nlive', 'outputdir', 
                        'prior', 'pstep'] #required parameters
-        self.optpar = ['dlogz', 'dumper', 'fbestp', 'fext', 'fprefix', 'fsavefile', 
-                       'kll', 'nrepeat', 'pnames', 
+        self.optpar = ['dlogz', 'dumper', 'fbestp', 'fext', 'fprefix', 
+                       'fsavefile', 'kll', 'nrepeat', 'pnames', 
                        'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 

@@ -204,6 +204,7 @@ of the true data.\newline
 ./dynesty_example.py
 ./snooker_example.py
 ./multinest_example.py
+./polychord_example.py
 ./ultranest_example.py
 \end{verbatim}
 
@@ -292,11 +293,12 @@ so users are encouraged to experiment with them.
 \item verb
 \end{itemize}
 
-\subsubsection{dynesty, multinest, \& ultranest}
+\subsubsection{dynesty, multinest, polychord, \& ultranest}
 \label{sec:ns-inputs}
 \begin{itemize}
 \item bound (only dynesty)
 \item dlogz
+\item dumper
 \item fbestp
 \item fext
 \item frac\_remain (only ultranest)
@@ -310,6 +312,7 @@ so users are encouraged to experiment with them.
 \item niter
 \item \textbf{nlive}
 \item \textbf{nlive\_batch} (only dynesty)
+\item nrepeat (only polychord)
 \item \textbf{outputdir}
 \item pnames
 \item \textbf{prior}
@@ -327,7 +330,7 @@ the previous section.  Each parameter is described below, alphabetically.
 To utilize default values, do not include it in **kwargs.
 
 \begin{itemize}
-\item beta : float. DNest 4 only. From their docs: strength of effect 
+\item beta : float. DNest4 only. From their docs: strength of effect 
                     to force histogram to equal push.  Default: 100.0
 \item bound : str. Dynesty only. Option to bound the target  
                    distribution. Choices: none (sample from unit  
@@ -342,15 +345,20 @@ To utilize default values, do not include it in **kwargs.
 \item dlogz : float. Target evidence uncertainty (stops when below  
                      this value).  Lower = more accurate, but also 
                      requires longer runtime. Default: 0.1
+\item dumper : object.  Polychord only.  Function to output info 
+                        during the inference.  Default: None
 \item fbestp : str. Filename for array of best-fit parameters.  
                     Must be NPY file.
 \item fext : str. File extension for saved plots.  
                   Options: .png, .pdf  Default: .png
 \item flog : str. MCMCs only. /path/to/log file to save out.  
                   Default: MCMC.log, located in `outputdir`
-\item fprefix : str. PyMultiNest only. Prefix for output filenames. 
-                     Recommended to be a directory, as this will create 
-                     a subdirectory within `outputdir`. Default: pmn/
+\item fprefix : str. Prefix for output filenames. Recommended to be 
+                     a directory (possibly with a prefix for all 
+                     produced files), as this will create a 
+                     subdirectory within `outputdir`. 
+                     Default: pmn/ for multinest, 
+                              run1 for polychord.
 \item fsavefile : str. Filename to store parameters explored.  
                             If relative path, it is considered with  
                             respect to `outputdir`.   
@@ -402,6 +410,11 @@ To utilize default values, do not include it in **kwargs.
                        Default: 10000
 \item nperstep : int. DNest4 only. Number of moves per MCMC iteration.  
                       Default: 10000
+\item nrepeat : int. Polychord only.  From their docs: The number of 
+                     slice slice-sampling steps to generate a new 
+                     point.  Increasing num_repeats increases the 
+                     reliability of the algorithm.  Default: None 
+                     (uses polychord's default of 5*ndims)
 \item outputdir : str. path/to/directory where output will be saved.
 \item perturb : object. DNest4 only. Function that proposes changes to 
                         parameter values.
