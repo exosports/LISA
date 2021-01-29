@@ -48,8 +48,11 @@ class BaseSampler(object):
         'flog' : 'str. /path/to/log file to save out. ' + \
                             'Default: MCMC.log, located in `outputdir`', 
         'fprefix' : 'str. Prefix for output filenames. Recommended to be ' + \
-                         'a directory, as this will create a subdirectory ' + \
-                         'within `outputdir`. Default: pmn/', 
+                         'a directory (possible with a prefix for all ' + \
+                         'produced files), as this will create a ' + \
+                         'subdirectory within `outputdir`. ' + \
+                         'Default: pmn/ for multinest, ' + \
+                         'polychord/run1 for polychord.', 
         'fsavefile' : 'str. Filename to store parameters explored. ' + \
                             'If relative path, it is considered with ' + \
                             'respect to `outputdir`.  ' + \

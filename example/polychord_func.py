@@ -25,6 +25,6 @@ def prior(cube, pmin, pmax):
 def loglikelihood(cube, data, uncert, model):
     ymodel = model(cube)
     loglike = (-0.5 * ((ymodel - data) / uncert)**2).sum()
-    return loglike
+    return loglike, []
 
 

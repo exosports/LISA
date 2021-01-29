@@ -69,12 +69,12 @@ for more details.
 
 Installation
 ============
-After recursively cloning the repo, users must compile MC3. 
+After recursively cloning the repo, users must compile the submodules. 
 Do so by entering
     make all
-or
+into the terminal.  Alternatively, users may compile them individually via 
     make mc3
-into the terminal.
+    make polychord
 
 To build the supplied conda environment, enter 
     conda env create -f environment.yml

@@ -15,7 +15,7 @@ from helper import BaseSampler
 
 class Sampler(BaseSampler):
     def __init__(self, dlogz=0.1, dumper=None, fbestp='bestp.npy', 
-                       fext='.png', fprefix='', fsavefile='output.npy', kll=None, 
+                       fext='.png', fprefix='run1', fsavefile='output.npy', kll=None, 
                        loglike=None, model=None, 
                        nlive=500, nrepeat=None, outputdir=None, pnames=None, 
                        prior=None, pstep=None, truepars=None, 
@@ -81,6 +81,9 @@ class Sampler(BaseSampler):
         # Make sure outputdir is an absolute path & exists
         self.make_abspath('outputdir')
         self.make_dir(self.outputdir)
+        if os.sep in self.fprefix:
+            self.make_dir(os.path.join(self.outputdir, 
+                                       self.fprefix.rsplit(os.sep, 1)[0]))
         # Now update paths based on that, if needed
         self.update_path('fbestp')
         self.update_path('fsavefile')
@@ -112,7 +115,7 @@ class Sampler(BaseSampler):
             settings.precision_criterion = self.dlogz
             settings.grade_dims  = [int(ndim)]
             settings.read_resume = False
-            settings.feedback    = 3
+            settings.feedback    = self.verb
             # Run it
             if self.dumper is not None:
                 out = pypolychord.run_polychord(self.loglike, ndim, 0, 
@@ -122,6 +125,11 @@ class Sampler(BaseSampler):
                 out = pypolychord.run_polychord(self.loglike, ndim, 0, 
                                                 settings, self.prior)
 
+            outp = np.loadtxt(os.path.join(self.outputdir, self.fprefix) +\
+                                   '_equal_weights.txt')
+            self.outp  = outp[:, 2:].T
+            ibest      = np.argmin(outp[:,1])
+            self.bestp = self.outp[:,ibest]
             # Save posterior and bestfit params
             if self.fsavefile is not None:
                 np.save(self.fsavefile, self.outp)
