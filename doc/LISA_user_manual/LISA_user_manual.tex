@@ -136,17 +136,24 @@ cd LISA/
 \end{verbatim}
 
 \noindent LISA contains a file to easily build a conda environment capable of 
-executing the software.  Create the environment via
+executing the software.  Create the environment and activate it via
 
 \begin{verbatim}
 conda env create -f environment.yml
-\end{verbatim}
-
-\noindent Then, activate the environment:
-
-\begin{verbatim}
 conda activate lisa
 \end{verbatim}
+
+\noindent On some systems, this approach may fail.  For a more robust approach that 
+requires additional steps, enter
+
+\begin{verbatim}
+conda create -n lisa python=3.7.2
+conda activate lisa
+conda env update --file environment.yml
+\end{verbatim}
+
+\noindent This will build a base Python 3.7.2 environment, activate it, and then update 
+it with the packages necessary to run LISA.\newline
 
 \noindent Now, build the submodules:
 
@@ -183,7 +190,7 @@ would be created via
 which contain the true data, noisy data, uncertainty on each data point, and 
 the true parameters, respectively.  The x-axis is assumed to be the integers 
 from -5 to 5, inclusive, and the uncertainty is assumed to be the square root 
-of the true data.
+of the true data.\newline
 
 \noindent Now, execute LISA for each of the samplers:
 
@@ -268,7 +275,7 @@ so users are encouraged to experiment with them.
 \item lam
 \item \textbf{loglike}
 \item \textbf{model}
-\item niter
+\item \textbf{niter}
 \item \textbf{nlevel}
 \item \textbf{nlevelint}
 \item \textbf{nperstep}
@@ -467,7 +474,7 @@ produced.
 \item outp.npy: Array of the approximation to the posterior.
 \end{itemize}
 
-\noindent Each sampler also has additional output files, listed below.
+\noindent Each sampler also has additional output files, listed below.\newline
 
 TODO fill in rest of the outputs for each method
 

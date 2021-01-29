@@ -4,7 +4,7 @@ import sys, os
 import functools
 import numpy as np
 
-import dnest4_func as dnf
+import polychord_func as pcf
 # Works whether the run directory is within the LISA repo, or parallel to it
 # If executing from a different location than either of those, users will 
 # need to adjust the following sys.path.append accordingly.
@@ -27,32 +27,26 @@ pstep  = np.array([  3.,   3.,   3.]) # "Step" size (used for initial samples)
 # The defined x-axis values corresponding to the data
 x = np.arange(-5, 6)
 
-func = functools.partial(dnf.model, x=x)
+func = functools.partial(pcf.model, x=x)
 
-prior = functools.partial(dnf.prior, ndim=np.sum(pstep>0), 
-                          pmin=pmin[pstep>0], pmax=pmax[pstep>0])
+prior = functools.partial(pcf.prior, pmin=pmin[pstep>0], pmax=pmax[pstep>0])
 
-loglike = functools.partial(dnf.loglikelihood, 
+loglike = functools.partial(pcf.loglikelihood, 
                             data=data, uncert=uncert, model=func)
-
-perturb = functools.partial(dnf.perturb, ndim=np.sum(pstep>0), 
-                            width=pmax[pstep>0]-pmin[pstep>0])
 
 prior.__name__   = 'prior'
 loglike.__name__ = 'loglike'
-perturb.__name__ = 'perturb'
 
 # Ensure the output directory exists
-outputdir = "./output_dnest4/"
+outputdir = "./output_polychord/"
 if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
 # Run it
-samp = LISA.run('dnest4', fbestp='output_bestp.npy', 
+samp = LISA.run('polychord', fbestp='output_bestp.npy', 
                 fext='.png', fsavefile='output_posterior.npy', 
                 kll=None, loglike=loglike, model=func, 
-                niter=100000, nlevel=40, nlevelint=10000, nperstep=10, 
-                outputdir=outputdir, perturb=perturb, 
+                nlive=500, outputdir=outputdir, 
                 pnames=pnames, prior=prior, pstep=pstep, 
                 truepars=pars, verb=1)
 

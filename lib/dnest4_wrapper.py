@@ -24,7 +24,7 @@ class DNest4_Model(object):
 class Sampler(BaseSampler):
     def __init__(self, beta=100, fbestp='bestp.npy', fext='.png', 
                        fsavefile='output.npy', kll=None, lam=5, 
-                       loglike=None, model=None, niter=-1, 
+                       loglike=None, model=None, niter=None, 
                        nlevel=30, nlevelint=10000, nperstep=10000, 
                        outputdir=None, perturb=None, pnames=None, 
                        prior=None, pstep=None, truepars=None, verb=0):
@@ -32,11 +32,11 @@ class Sampler(BaseSampler):
         super(Sampler, self).__init__()
         # General info about the algorithm
         self.alg = 'dnest4' #name
-        self.reqpar = ['loglike', 'model', 'nlevel', 'nlevelint', 
+        self.reqpar = ['loglike', 'model', 'niter', 'nlevel', 'nlevelint', 
                        'nperstep', 'outputdir', 'perturb', 
                        'prior', 'pstep'] #required parameters
         self.optpar = ['beta', 'fbestp', 'fext', 'fsavefile', 
-                       'kll', 'lam', 'niter', 'pnames', 
+                       'kll', 'lam', 'pnames', 
                        'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
@@ -86,6 +86,7 @@ class Sampler(BaseSampler):
         # Check that required arguments are not none
         self.check_none('loglike')
         self.check_none('model')
+        self.check_none('niter')
         self.check_none('outputdir')
         self.check_none('perturb')
         self.check_none('prior')

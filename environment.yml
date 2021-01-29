@@ -10,8 +10,8 @@ dependencies:
   - python=3.7.2
   - yaml=0.1.7
   - h5py=2.10.0
-  - multinest
-  - pymultinest
-  - ultranest
-  - dynesty
-  - dnest4
+  - multinest=3.10
+  - pymultinest=2.9
+  - ultranest=2.2.1
+  - dynesty=1.0.1
+  - dnest4=0.2.4

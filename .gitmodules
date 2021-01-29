@@ -1,3 +1,6 @@
 [submodule "modules/MCcubed"]
 	path = modules/MCcubed
 	url = https://github.com/mdhimes/mc3
+[submodule "modules/PolyChordLite"]
+	path = modules/PolyChordLite
+	url = https://github.com/PolyChord/PolyChordLite

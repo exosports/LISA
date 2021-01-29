@@ -39,6 +39,8 @@ class BaseSampler(object):
                         'Must be Numpy array, list, or a path to a NPY file.', 
         'dlogz' : 'float. Target evidence uncertainty (stops when below ' + \
                          'this value).  Default: 0.1', 
+        'dumper' : 'object.  Polychord only.  Function to output info ' + \
+                            'during the inference.  Default: None', 
         'fbestp' : 'str. Filename for array of best-fit parameters. ' + \
                    'Must be NPY file.', 
         'fext' : 'str. File extension for saved plots. ' + \
@@ -94,6 +96,11 @@ class BaseSampler(object):
                            'new level. Default: 10000', 
         'nperstep' : 'int. DNest4 only. Number of moves per MCMC ' + \
                           'iteration.  Default: 10000', 
+        'nrepeat' : "int. Polychord only.  From their docs: The number of " + \
+                         "slice slice-sampling steps to generate a new " + \
+                         "point.  Increasing num_repeats increases the " + \
+                         "reliability of the algorithm.  Default: None " + \
+                         "(uses polychord's default of 5*ndims)", 
         'outputdir' : 'str. path/to/directory where output will be saved.', 
         'perturb' : 'object. DNest4 only. Function that proposes changes ' + \
                             'to parameter values.',  

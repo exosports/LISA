@@ -57,10 +57,6 @@ environment.yml - Contains the required packages for LISA.
 example/        - Contains examples of executing LISA.
 LISA.py         - The executable driver for LISA. Accepts a configuration file.
 lib/            - Contains the wrappers for sampling algorithms.
-  demc_wrapper.py      - Wrapper for MC3's DEMC algorithm.
-  multinest_wrapper.py - Wrapper for PyMultiNest.
-  snooker_wrapper.py   - Wrapper for MC3's snooker algorithm.
-  ultranest_wrapper.py - Wrapper for UltraNest.
 Makefile        - Handles building MC3.
 modules/        - Contains submodules for some sampling algorithms.
   MCcubed       - MC3 package.
@@ -84,6 +80,14 @@ To build the supplied conda environment, enter
     conda env create -f environment.yml
 and activate it:
     conda activate lisa
+
+On some systems, this approach may fail.  For a more robust approach that 
+requires additional steps, enter
+    conda create -n lisa python=3.7.2
+    conda activate lisa
+    conda env update --file environment.yml
+This will build a base Python 3.7.2 environment, activate it, and then update 
+it with the packages necessary to run LISA.
 
 You are now ready to use LISA!
 

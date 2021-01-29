@@ -34,6 +34,8 @@ def setup(alg, **kwargs):
         from dynesty_wrapper   import Sampler
     elif alg == 'multinest':
         from multinest_wrapper import Sampler
+    elif alg == 'polychord':
+        from polychord_wrapper import Sampler
     elif alg == 'snooker':
         from snooker_wrapper   import Sampler
     elif alg == 'ultranest':
@@ -41,7 +43,7 @@ def setup(alg, **kwargs):
     else:
         raise ValueError("The supplied algorithm does not exist in LISA.\n" + \
                          "Options: demc, dnest4, dynesty, multinest, " + \
-                         "snooker, ultranest\nReceived: " + alg)
+                         "polychord, snooker, ultranest\nReceived: " + alg)
     return Sampler(**kwargs)
 
 
