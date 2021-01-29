@@ -91,7 +91,7 @@ class BaseSampler(object):
         'nlevel' : 'int. DNest4 only. From their docs: Maximum number of ' + \
                         'levels to create.  Default: 30', 
         'nlevelint' : 'int. DNest4 only. Number of moves before creating ' + \
-                           'new level. Default: 10000'
+                           'new level. Default: 10000', 
         'nperstep' : 'int. DNest4 only. Number of moves per MCMC ' + \
                           'iteration.  Default: 10000', 
         'outputdir' : 'str. path/to/directory where output will be saved.', 

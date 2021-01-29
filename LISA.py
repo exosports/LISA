@@ -28,6 +28,8 @@ def setup(alg, **kwargs):
     """
     if alg == 'demc':
         from demc_wrapper      import Sampler
+    elif alg == 'dnest4':
+        from dnest4_wrapper    import Sampler
     elif alg == 'dynesty':
         from dynesty_wrapper   import Sampler
     elif alg == 'multinest':
@@ -38,8 +40,8 @@ def setup(alg, **kwargs):
         from ultranest_wrapper import Sampler
     else:
         raise ValueError("The supplied algorithm does not exist in LISA.\n" + \
-                         "Options: demc, dynesty, multinest, snooker, " + \
-                         "ultranest\nReceived: " + alg)
+                         "Options: demc, dnest4, dynesty, multinest, " + \
+                         "snooker, ultranest\nReceived: " + alg)
     return Sampler(**kwargs)
 
 

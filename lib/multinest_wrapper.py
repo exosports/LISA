@@ -116,12 +116,11 @@ class Sampler(BaseSampler):
                                                               self.fprefix))
             s = a.get_stats()
             self.bestp = a.get_best_fit()['parameters']
-            self.outp  = a.get_equal_weighted_posterior()[:, :-1]
+            self.outp  = a.get_equal_weighted_posterior()[:, :-1].T
             # Update quantiles
             if self.kll is not None:
-                for i in range(self.outp.shape[0]):
-                    self.kll.update(self.model(self.outp[i], fullout=True))
-            self.outp = self.outp.T
+                for i in range(self.outp.shape[-1]):
+                    self.kll.update(self.model(self.outp[:,i], fullout=True))
 
             if self.verb:
                 print("Global Evidence:\n\t%.15e +- %.15e" % \

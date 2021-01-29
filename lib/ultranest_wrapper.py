@@ -119,11 +119,10 @@ class Sampler(BaseSampler):
 
             # Posterior and best parameters
             self.bestp = np.array(un.results['maximum_likelihood']['point'])
-            self.outp  = un.results['samples']
+            self.outp  = un.results['samples'].T
             if self.kll is not None:
-                for i in range(outp.shape[0]):
-                    self.kll.update(self.model(self.outp[i], fullout=True))
-            self.outp = self.outp.T
+                for i in range(self.outp.shape[-1]):
+                    self.kll.update(self.model(self.outp[:,i], fullout=True))
 
             # UltraNest Plotting
             un.plot_corner()
