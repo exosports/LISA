@@ -126,6 +126,12 @@ class BaseSampler(object):
                          'automatically adjusted.  For nested sampling ' + \
                          'algorithms, only used to determine constant ' + \
                          'parameters.', 
+        'resample' : 'float. DNest4 only. Must be non-negative.  ' + \
+                         'If >0, corresponds to a factor affecting the ' + \
+                         'number of draws from the posterior.  If 0, no ' + \
+                         'resampling is performed.  Default: 100', 
+        'resume' : 'bool. Determines whether to resume a previous run, if ' + \
+                         'possible. Default: False', 
         'sample' : 'str. Dynesty only. Sampling method. Choices ' + \
                         '(descriptions from their docs): unif (uniform ' + \
                         'sampling), rwalk (random walks from current live ' + \

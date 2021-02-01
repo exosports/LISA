@@ -17,7 +17,8 @@ class Sampler(BaseSampler):
                        frac_remain=0.01, fsavefile='output.npy', kll=None, 
                        Lepsilon=0.001, loglike=None, min_ess=500, model=None, 
                        niter=None, nlive=500, outputdir=None, pnames=None, 
-                       prior=None, pstep=None, truepars=None, verb=0):
+                       prior=None, pstep=None, resume=False, truepars=None, 
+                       verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -30,7 +31,7 @@ class Sampler(BaseSampler):
                        'prior', 'pstep'] #required parameters
         self.optpar = ['dlogz', 'fbestp', 'fext', 'frac_remain', 'fsavefile', 
                        'kll', 'Lepsilon', 'min_ess', 'niter', 'pnames', 
-                       'truepars', 'verb'] #optional parameters
+                       'resume', 'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
                          for key in self.reqpar+self.optpar}
@@ -51,6 +52,7 @@ class Sampler(BaseSampler):
         self.pnames      = pnames
         self.prior       = prior
         self.pstep       = pstep
+        self.resume      = resume
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
@@ -108,7 +110,8 @@ class Sampler(BaseSampler):
                                                  self.loglike, 
                                                  self.prior, 
                                                  log_dir=self.outputdir, 
-                                                 vectorized=True)
+                                                 vectorized=True, 
+                                                 resume=self.resume)
             # Run it
             out = un.run(min_ess=self.min_ess, max_iters=self.niter, 
                          min_num_live_points=self.nlive, 

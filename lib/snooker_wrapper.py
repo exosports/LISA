@@ -22,8 +22,8 @@ class Sampler(BaseSampler):
                        modelper=0, nchains=1, niter=None, 
                        outputdir=None, 
                        pinit=None, pmax=None, pmin=None, pnames=None, 
-                       pstep=None, thinning=1, truepars=None, uncert=None, 
-                       verb=0):
+                       pstep=None, resume=False, thinning=1, truepars=None, 
+                       uncert=None, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -37,7 +37,8 @@ class Sampler(BaseSampler):
                        'uncert'] #required parameters
         self.optpar = ['fbestp', 'fext', 'flog', 'fsavefile', 'fsavemodel', 
                        'hsize', 'indparams', 'kll', 'modelper', 'pnames', 
-                       'thinning', 'truepars', 'verb'] #optional parameters
+                       'resume', 'thinning', 'truepars', 
+                       'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
                          for key in self.reqpar+self.optpar}
@@ -61,6 +62,7 @@ class Sampler(BaseSampler):
         self.pmin       = pmin
         self.pnames     = pnames
         self.pstep      = pstep
+        self.resume     = resume
         self.thinning   = thinning
         self.truepars   = truepars
         self.uncert     = uncert
@@ -145,7 +147,8 @@ class Sampler(BaseSampler):
                                     leastsq   = False, 
                                     log       = logfile, 
                                     savefile  = self.fsavefile,
-                                    savemodel = self.fsavemodel)
+                                    savemodel = self.fsavemodel, 
+                                    resume    = self.resume)
             # Save bestfit params
             if self.fbestp is not None:
                 np.save(self.fbestp, self.bestp)

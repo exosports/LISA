@@ -51,7 +51,7 @@ if not os.path.isdir(outputdir):
 samp = LISA.run('dnest4', fbestp='output_bestp.npy', 
                 fext='.png', fsavefile='output_posterior.npy', 
                 kll=None, loglike=loglike, model=func, 
-                niter=100000, nlevel=40, nlevelint=10000, nperstep=10, 
+                niter=10000, nlevel=30, nlevelint=1000, nperstep=100, 
                 outputdir=outputdir, perturb=perturb, 
                 pnames=pnames, prior=prior, pstep=pstep, 
                 truepars=pars, verb=1)

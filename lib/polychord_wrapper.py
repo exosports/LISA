@@ -17,8 +17,8 @@ class Sampler(BaseSampler):
     def __init__(self, dlogz=0.1, dumper=None, fbestp='bestp.npy', 
                        fext='.png', fprefix='run1', fsavefile='output.npy', 
                        kll=None, loglike=None, model=None, nlive=500, 
-                       nrepeat=None, outputdir=None, pnames=None, 
-                       prior=None, pstep=None, truepars=None, verb=0):
+                       nrepeat=None, outputdir=None, pnames=None, prior=None, 
+                       pstep=None, resume=False, truepars=None, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -30,7 +30,7 @@ class Sampler(BaseSampler):
         self.reqpar = ['loglike', 'model', 'nlive', 'outputdir', 
                        'prior', 'pstep'] #required parameters
         self.optpar = ['dlogz', 'dumper', 'fbestp', 'fext', 'fprefix', 
-                       'fsavefile', 'kll', 'nrepeat', 'pnames', 
+                       'fsavefile', 'kll', 'nrepeat', 'pnames', 'resume', 
                        'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
@@ -51,6 +51,7 @@ class Sampler(BaseSampler):
         self.pnames      = pnames
         self.prior       = prior
         self.pstep       = pstep
+        self.resume      = resume
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
@@ -106,9 +107,10 @@ class Sampler(BaseSampler):
             # Setup the inference
             ndim = np.sum(self.pstep > 0)
             settings = PolyChordSettings(ndim, 0)
-            settings.base_dir  = self.outputdir
-            settings.file_root = self.fprefix
-            settings.nlive     = self.nlive
+            settings.base_dir    = self.outputdir
+            settings.file_root   = self.fprefix
+            settings.nlive       = self.nlive
+            settings.read_resume = self.resume
             if self.nrepeat is not None:
                 settings.num_repeat      = self.nrepeat
             settings.precision_criterion = self.dlogz

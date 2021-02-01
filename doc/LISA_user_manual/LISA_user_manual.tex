@@ -71,8 +71,9 @@ DEMC algorithm of ter Braak (2006),
 DEMCzs of ter Braak \& Vrugt (2008, `snooker'), 
 MultiNest of Feroz et al. (2008) via PyMultiNest (Buchner et al. 2014), 
 UltraNest of Buchner (2016), 
-dynesty of Speagle (2019), and 
-DNest4 of Brewer & Foreman-Mackey (2018).  
+dynesty of Speagle (2019), 
+DNest4 of Brewer & Foreman-Mackey (2018), and 
+polychord of Handley et al. (2015a, 2015b).  
 We welcome users to contribute wrappers for additional 
 algorithms via a pull request on Github. \newline
 
@@ -128,8 +129,8 @@ versions of packages:
 
 \noindent To begin, obtain the latest stable version of LISA.  \newline
 
-\noindent First, decide on a local directory to hold LISA.  Let the path to this directory 
-be `LISA'.  Now, clone the repository:
+\noindent First, decide on a local directory to hold LISA.  Let the path to this 
+directory be `LISA'.  Now, recursively clone the repository:
 \begin{verbatim}
 git clone --recursive https://github.com/exosports/LISA LISA/
 cd LISA/
@@ -264,6 +265,7 @@ so users are encouraged to experiment with them.
 \item \textbf{pmin}
 \item pnames
 \item \textbf{pstep}
+\item resume
 \item thinning
 \item truepars
 \item \textbf{uncert}
@@ -289,6 +291,7 @@ so users are encouraged to experiment with them.
 \item pnames
 \item \textbf{prior}
 \item \textbf{pstep}
+\item resample
 \item truepars
 \item verb
 \end{itemize}
@@ -317,6 +320,7 @@ so users are encouraged to experiment with them.
 \item pnames
 \item \textbf{prior}
 \item \textbf{pstep}
+\item resume (all except dynesty)
 \item sample (only dynesty)
 \item truepars
 \item verb
@@ -437,6 +441,12 @@ To utilize default values, do not include it in **kwargs.
                          automatically adjusted.  For nested sampling  
                          algorithms, only used to determine constant  
                          parameters.
+\item resample : float. DNest4 only. Must be non-negative.  
+                         If >0, corresponds to a factor affecting the 
+                         number of draws from the posterior.  If 0, no 
+                         resampling is performed.  Default: 100
+\item resume: bool.  Determines whether to resume a previous run, if possible. 
+                     Default: False
 \item sample : str. Dynesty only. Sampling method. Choices  
                         (descriptions from their docs): unif (uniform  
                         sampling), rwalk (random walks from current live  
@@ -491,9 +501,38 @@ produced.
 \item outp.npy: Array of the approximation to the posterior.
 \end{itemize}
 
-\noindent Each sampler also has additional output files, listed below.\newline
+\noindent Except for dynesty, each sampler also has additional output files, 
+briefly discussed below.\newline
 
-TODO fill in rest of the outputs for each method
+\subsection{demc \& snooker}
+\begin{itemize}
+\item MCMC.log: text file with statistics about the MCMC run.
+\end{itemize}
+
+\subsection{dnest4}
+DNest4 produces some files about the sampler's history.  All are saved into 
+`outputdir` EXCEPT for sampler\_state.txt, which is saved into the directory 
+where LISA was executed from.  For more details, see the DNest4 code/docs.
+
+\subsection{multinest}
+\begin{itemize}
+\item marginals\_multinest.png: plot of the 1D marginalized posteriors produced 
+                               by multinest.
+\end{itemize}
+\noindent Additionally, a subdirectory containing the files necessary to resume 
+the run as well as summary plots and files is created (default is pmn/).  For 
+more details, see the MultiNest/PyMultiNest docs.
+
+\subsection{polychord}
+\begin{itemize}
+\item MCMC.log: text file with statistics about the MCMC run.
+\end{itemize}
+
+\subsection{ultranest}
+UltraNest's output gets saved into a subdirectory named `run` followed by a 
+number.  It contains a log file, chain histories, summary files, and plots. 
+For more details, see UltraNest's docs.
+
 
 \section{FAQ}
 

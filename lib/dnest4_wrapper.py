@@ -27,7 +27,8 @@ class Sampler(BaseSampler):
                        loglike=None, model=None, niter=None, 
                        nlevel=30, nlevelint=10000, nperstep=10000, 
                        outputdir=None, perturb=None, pnames=None, 
-                       prior=None, pstep=None, truepars=None, verb=0):
+                       prior=None, pstep=None, resample=100, truepars=None, 
+                       verb=0):
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm
@@ -36,7 +37,7 @@ class Sampler(BaseSampler):
                        'nperstep', 'outputdir', 'perturb', 
                        'prior', 'pstep'] #required parameters
         self.optpar = ['beta', 'fbestp', 'fext', 'fsavefile', 
-                       'kll', 'lam', 'pnames', 
+                       'kll', 'lam', 'pnames', 'resample', 
                        'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
@@ -59,6 +60,7 @@ class Sampler(BaseSampler):
         self.pnames      = pnames
         self.prior       = prior
         self.pstep       = pstep
+        self.resample    = resample
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
@@ -83,6 +85,7 @@ class Sampler(BaseSampler):
         # Check non-negative floats
         self.check_nonnegfloat('beta')
         self.check_nonnegfloat('lam')
+        self.check_nonnegfloat('resample')
         # Check that required arguments are not none
         self.check_none('loglike')
         self.check_none('model')
@@ -131,15 +134,21 @@ class Sampler(BaseSampler):
                     print(''.join(['Iteration: ', str(i+1), '/', 
                                    str(self.niter)]), end='\r')
             print('')
-            stats = dns.postprocess()
             # Best-fit parameters
             ibest      = np.argmax(backend.sample_info["log_likelihood"])
             self.bestp = backend.samples[ibest]
+            # Resample for posterior
+            stats = dns.postprocess(resample=self.resample)
+            self.outp = backend.posterior_samples.T
+            """
+            stats = dns.postprocess()
             # Load the weights to properly estimate the posterior
-            weights = np.loadtxt(os.path.join(self.outputdir, 'weights.txt'))
+            #weights = np.loadtxt(os.path.join(self.outputdir, 'weights.txt'))
+            weights = np.squeeze(backend.weights)
             wsh     = weights.shape[0]
             # Remove cases w/ 0 weight
-            samps   = backend.samples[weights!=0]
+            samps   = backend.samples
+            samps   = samps  [weights!=0]
             weights = weights[weights!=0]
             # As in MultiNest, resample to equal weights by considering 
             # int(nsamples*weight) repetitions
@@ -148,6 +157,7 @@ class Sampler(BaseSampler):
                 self.outp.extend([samps[i] 
                                   for j in range(int(wsh * weights[i]))])
             self.outp = np.asarray(self.outp).T
+            """
             # Quantiles
             if self.kll is not None:
                 for i in range(self.outp.shape[-1]):

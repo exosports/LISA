@@ -16,8 +16,8 @@ class Sampler(BaseSampler):
     def __init__(self, dlogz=0.1, fbestp='bestp.npy', fext='.png', fprefix='pmn/', 
                        fsavefile='output.npy', kll=None, 
                        loglike=None, model=None, niter=0, nlive=500, 
-                       outputdir=None, pnames=None, 
-                       prior=None, pstep=None, truepars=None, verb=0):
+                       outputdir=None, pnames=None, prior=None, pstep=None, 
+                       resume=False, truepars=None, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -29,7 +29,7 @@ class Sampler(BaseSampler):
         self.reqpar = ['loglike', 'model', 'nlive', 'outputdir', 
                        'prior', 'pstep'] #required parameters
         self.optpar = ['dlogz', 'fbestp', 'fext', 'fprefix', 'fsavefile', 
-                       'kll', 'niter', 'pnames', 'truepars', 
+                       'kll', 'niter', 'pnames', 'resume', 'truepars', 
                        'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
@@ -49,6 +49,7 @@ class Sampler(BaseSampler):
         self.pnames     = pnames
         self.prior      = prior
         self.pstep      = pstep
+        self.resume     = resume
         self.truepars   = truepars
         self.verb       = verb
         if self.verb:
@@ -109,7 +110,8 @@ class Sampler(BaseSampler):
                               outputfiles_basename=os.path.join(self.outputdir, 
                                                                 self.fprefix), 
                               n_live_points=self.nlive, max_iter=self.niter, 
-                              evidence_tolerance=self.dlogz)
+                              evidence_tolerance=self.dlogz, 
+                              resume=self.resume)
             # Analyze the output
             a = pymultinest.Analyzer(n_params=len(self.pstep), 
                             outputfiles_basename=os.path.join(self.outputdir, 
