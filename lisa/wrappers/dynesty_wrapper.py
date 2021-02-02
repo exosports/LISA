@@ -1,5 +1,5 @@
 """
-Wrapper for the polychord algorithm of Handley et al. (2015a, 2015b).
+Wrapper for dynesty dynamic nested sampling algorithm of Speagle (2019).
 
 Sampler: class to setup and run an inference
 """
@@ -7,18 +7,18 @@ Sampler: class to setup and run an inference
 import sys, os
 import numpy as np
 import matplotlib.pyplot as plt
-import pypolychord
-from pypolychord.settings import PolyChordSettings
+import dynesty
 
-from helper import BaseSampler
+from .helper import BaseSampler
 
 
 class Sampler(BaseSampler):
-    def __init__(self, dlogz=0.1, dumper=None, fbestp='bestp.npy', 
-                       fext='.png', fprefix='run1', fsavefile='output.npy', 
-                       kll=None, loglike=None, model=None, nlive=500, 
-                       nrepeat=None, outputdir=None, pnames=None, prior=None, 
-                       pstep=None, resume=False, truepars=None, verb=0):
+    def __init__(self, bound='multi', dlogz=0.1, fbestp='bestp.npy', 
+                       fext='.png', fsavefile='output.npy', kll=None, 
+                       loglike=None, min_ess=500, model=None, niter=None, 
+                       nlive=500, nlive_batch=500, outputdir=None, pnames=None, 
+                       prior=None, pstep=None, sample='auto', truepars=None, 
+                       verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -26,36 +26,37 @@ class Sampler(BaseSampler):
         # Instantiate attributes from BaseSampler
         super(Sampler, self).__init__()
         # General info about the algorithm
-        self.alg = 'polychord' #name
-        self.reqpar = ['loglike', 'model', 'nlive', 'outputdir', 
+        self.alg = 'dynesty' #name
+        self.reqpar = ['loglike', 'model', 'nlive', 'nlive_batch', 'outputdir', 
                        'prior', 'pstep'] #required parameters
-        self.optpar = ['dlogz', 'dumper', 'fbestp', 'fext', 'fprefix', 
-                       'fsavefile', 'kll', 'nrepeat', 'pnames', 'resume', 
+        self.optpar = ['bound', 'dlogz', 'fbestp', 'fext', 'fsavefile', 
+                       'kll', 'min_ess', 'niter', 'pnames', 'sample', 
                        'truepars', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
                          for key in self.reqpar+self.optpar}
         # Load supplied parameters
+        self.bound       = bound
         self.dlogz       = dlogz
-        self.dumper      = dumper
         self.fbestp      = fbestp
         self.fext        = fext
-        self.fprefix     = fprefix
         self.fsavefile   = fsavefile
         self.kll         = kll
         self.loglike     = loglike
+        self.min_ess     = min_ess
         self.model       = model
+        self.niter       = niter
         self.nlive       = nlive
-        self.nrepeat     = nrepeat
+        self.nlive_batch = nlive_batch
         self.outputdir   = outputdir
         self.pnames      = pnames
         self.prior       = prior
         self.pstep       = pstep
-        self.resume      = resume
+        self.sample      = sample
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
-            print("polychord sampler initialized")
+            print("dynesty sampler initialized")
             print("To view a list of required parameters, print obj.reqpar")
             print("To view a list of optional parameters, print obj.optpar")
             print("For details on any parameter, call " + \
@@ -72,21 +73,18 @@ class Sampler(BaseSampler):
         # Check non-negative float inputs
         self.check_nonnegfloat('dlogz')
         # Check positive int inputs
+        self.check_posint('min_ess')
         self.check_posint('nlive')
+        self.check_posint('nlive_batch')
         # Check that required arguments are not none
         self.check_none('loglike')
         self.check_none('model')
-        self.check_none('outputdir')
         self.check_none('prior')
         # Make sure outputdir is an absolute path & exists
-        self.make_abspath('outputdir')
-        self.make_dir(self.outputdir)
-        if os.sep in self.fprefix:
-            self.make_dir(os.path.join(self.outputdir, 
-                                       self.fprefix.rsplit(os.sep, 1)[0]))
-        # Now update paths based on that, if needed
-        self.update_path('fbestp')
-        self.update_path('fsavefile')
+        if self.make_abspath('outputdir'):
+            # Now update paths based on that, if needed
+            self.update_path('fbestp')
+            self.update_path('fsavefile')
         # Ensure proper pnames exist as numpy array
         self.check_pnames()
         # Ready to run?
@@ -106,31 +104,45 @@ class Sampler(BaseSampler):
         if self.prepare():
             # Setup the inference
             ndim = np.sum(self.pstep > 0)
-            settings = PolyChordSettings(ndim, 0)
-            settings.base_dir    = self.outputdir
-            settings.file_root   = self.fprefix
-            settings.nlive       = self.nlive
-            settings.read_resume = self.resume
-            if self.nrepeat is not None:
-                settings.num_repeat      = self.nrepeat
-            settings.precision_criterion = self.dlogz
-            settings.grade_dims  = [int(ndim)]
-            settings.read_resume = False
-            settings.feedback    = self.verb
-            # Run it
-            if self.dumper is not None:
-                out = pypolychord.run_polychord(self.loglike, ndim, 0, 
-                                                settings, self.prior, 
-                                                self.dumper)
-            else:
-                out = pypolychord.run_polychord(self.loglike, ndim, 0, 
-                                                settings, self.prior)
+            dy   = dynesty.DynamicNestedSampler(self.loglike, 
+                                                self.prior, 
+                                                ndim, 
+                                                bound=self.bound, 
+                                                sample=self.sample)
 
-            outp = np.loadtxt(os.path.join(self.outputdir, self.fprefix) +\
-                                   '_equal_weights.txt')
-            self.outp  = outp[:, 2:].T
-            ibest      = np.argmin(outp[:,1])
-            self.bestp = self.outp[:,ibest]
+            # Run it
+            dy.run_nested(nlive_init=self.nlive, 
+                          nlive_batch=self.nlive_batch, 
+                          maxiter=self.niter, dlogz_init=self.dlogz, 
+                          n_effective=self.min_ess)
+            results = dy.results
+
+            # Posterior and best parameters
+            self.bestp = results["samples"][np.argmax(results["logl"])]
+            samps      = results["samples"]
+            nsamp      = samps.shape[0]
+            # From cornerplot in dynesty/plotting.py 
+            try:
+                weights = np.exp(results['logwt'] - results['logz'][-1])
+            except:
+                weights = results['weights']
+            # Remove cases w/ 0 weight
+            samps   = samps  [weights!=0]
+            weights = weights[weights!=0]
+
+            # As in MultiNest, resample to equal weights by considering 
+            # int(nsamples*weight) repetitions
+            self.outp = []
+            for i in range(len(weights)):
+                self.outp.extend([samps[i] 
+                                  for j in range(int(nsamp * weights[i]))])
+            self.outp = np.asarray(self.outp)
+
+            if self.kll is not None:
+                for i in range(self.outp.shape[0]):
+                    self.kll.update(self.model(self.outp[i], fullout=True))
+            self.outp = self.outp.T
+
             # Save posterior and bestfit params
             if self.fsavefile is not None:
                 np.save(self.fsavefile, self.outp)

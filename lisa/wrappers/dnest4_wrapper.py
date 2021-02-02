@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import dnest4
 
-from helper import BaseSampler
+from .helper import BaseSampler
 
 
 class DNest4_Model(object):
@@ -90,15 +90,13 @@ class Sampler(BaseSampler):
         self.check_none('loglike')
         self.check_none('model')
         self.check_none('niter')
-        self.check_none('outputdir')
         self.check_none('perturb')
         self.check_none('prior')
         # Make sure outputdir is an absolute path & exists
-        self.make_abspath('outputdir')
-        self.make_dir(self.outputdir)
-        # Now update paths based on that, if needed
-        self.update_path('fbestp')
-        self.update_path('fsavefile')
+        if self.make_abspath('outputdir'):
+            # Now update paths based on that, if needed
+            self.update_path('fbestp')
+            self.update_path('fsavefile')
         # Ensure proper pnames exist as numpy array
         self.check_pnames()
         # Ready to run?

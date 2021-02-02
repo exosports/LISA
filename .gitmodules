@@ -1,6 +1,6 @@
 [submodule "modules/MCcubed"]
-	path = modules/MCcubed
+	path = lisa/modules/MCcubed
 	url = https://github.com/mdhimes/mc3
 [submodule "modules/PolyChordLite"]
-	path = modules/PolyChordLite
+	path = lisa/modules/PolyChordLite
 	url = https://github.com/PolyChord/PolyChordLite

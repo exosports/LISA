@@ -58,12 +58,18 @@ doc/            - Contains documentation for LISA.  The User Manual contains
                   walkthrough for setup and running an example.
 environment.yml - Contains the required packages for LISA.
 example/        - Contains examples of executing LISA.
-LISA.py         - The executable driver for LISA. Accepts a configuration file.
-lib/            - Contains the wrappers for sampling algorithms.
+LICENSE         - Contains the text of the sfotware's license.
+lisa/           - Contains the LISA package.
+  __init__.py   - Contains the main functions to use LISA.
+  modules/      - Contains submodules for some sampling algorithms.
+    MCcubed     - MC3 package.
+    PolyChordLite - polychord's public release on Github.
+  _version.py   - Tracks the code's version.
+  wrappers/     - Contains wrappers for the sampling algorithms.
+    helper.py   - Contains the parent class for samplers.
 Makefile        - Handles building MC3.
-modules/        - Contains submodules for some sampling algorithms.
-  MCcubed       - MC3 package.
 README          - This file!
+setup.py        - Used to install the package.
 
 
 Note that all .py files have complete documentation; consult a specific file 
@@ -72,13 +78,6 @@ for more details.
 
 Installation
 ============
-After recursively cloning the repo, users must compile the submodules. 
-Do so by entering
-    make all
-into the terminal.  Alternatively, users may compile them individually via 
-    make mc3
-    make polychord
-
 To build the supplied conda environment, enter 
     conda env create -f environment.yml
 and activate it:
@@ -92,7 +91,14 @@ requires additional steps, enter
 This will build a base Python 3.7.2 environment, activate it, and then update 
 it with the packages necessary to run LISA.
 
-You are now ready to use LISA!
+Now, install LISA:
+    python setup.py install
+This will compile required submodules and build an importable package.
+
+To check that everything installed properly, start up a Python session and try 
+    import lisa
+If it succeeds without warnings about missing MultiNest files, 
+you are now ready to use LISA!
 
 
 Executing LISA

@@ -7,23 +7,26 @@ mcpdir = os.path.join(os.path.dirname(__file__), '..', 'modules', 'MCcubed',
 sys.path.append(mcpdir)
 import mcplots as mcp
 
-### max_iters ==> niter
 
 class BaseSampler(object):
     """
-    Base class for samplers in LISA.
+    Parent class for samplers in LISA.  
 
     Contains the helpinfo attribute, which is a dictionary containing 
-    descriptions of each parameter.
+    descriptions of each parameter.  The help(param) method returns the 
+    dictionary entry for `param`.
 
-    Contains helper methods common to multiple samplers.
+    Contains helper methods common to samplers: make_dir, check_none, 
+    check_nonnegfloat, check_nonnegint, check_pnames, check_posint, 
+    make_abspath, prep_arr, and update_path.  These are used when checking 
+    that the user has supplied proper inputs before attempting to run the 
+    sampler.
     """
     def __init__(self):
-        self.alg      = None
-        self.ran      = False
-        self.nchains  = 1 #for posterior plots
-        self.prepared = False
-        self.thinning = 1 #for posterior plots
+        # Default values
+        self.nchains  = 1 # some samplers do not use these params, 
+        self.thinning = 1 # but they are required for posterior plots
+        # Dictionary of parameters and their descriptions
         self.helpinfo = {
         'beta' : 'float. DNest 4 only. From their docs: strength of effect ' + \
                         'to force histogram to equal push.  Default: 100.0', 
@@ -224,22 +227,22 @@ class BaseSampler(object):
     def check_pnames(self):
         """
         Creates an array of parameter names if the user does not provide them
-        ** MODIFIES THE OBJECT'S ATTRIBUTE IF IT IS None **
+        ** MODIFIES THE OBJECT'S pnames ATTRIBUTE IF IT IS None **
         """
         # Set default parameter names:
-        if self.pnames is None:
-            npars = self.pstep.size
-            namelen = int(2+np.log10(np.amax([npars-1,1])))
+        if self.pnames is None and self.pstep is not None:
+            if self.verb:
+                print("Using default parameter names.")
+            npars       = self.pstep.size
+            namelen     = int(2+np.log10(np.amax([npars-1,1])))
             self.pnames = np.zeros(npars, "|S%d"%namelen if six.PY2 
                                      else "<U%d"%namelen)
             for i in np.arange(npars):
                 self.pnames[i] = "P" + str(i).zfill(namelen-1)
-            if self.verb:
-                print("Using default parameter names.")
         elif type(self.pnames) == list:
-            self.pnames = np.asarray(self.pnames)
             if self.verb:
                 print("Converting pnames list into Numpy array")
+            self.pnames = np.asarray(self.pnames)
 
     def check_posint(self, attr):
         """
@@ -252,11 +255,21 @@ class BaseSampler(object):
 
     def make_abspath(self, attr):
         """
-        Ensures a path is an absolute path.
+        Ensures a path is an absolute path and that it exists.  Returns True on 
+        success or False on failure.
         """
         if getattr(self, attr) is not None:
+            # Ensure absolute path
             if not os.path.isabs(getattr(self, attr)):
                 setattr(self, attr, os.path.abspath(getattr(self, attr)))
+            # Ensure directory exists
+            if not os.path.exists(getattr(self, attr)):
+                self.make_dir(getattr(self, attr))
+            return True
+        else:
+            print(attr, "must be specified.")
+            self.unprepared += 1
+            return False
 
     def prep_arr(self, attr):
         """

@@ -7,7 +7,7 @@ Sampler: class to setup and run an inference
 import sys, os
 import numpy as np
 
-from helper import BaseSampler
+from .helper import BaseSampler
 
 mc3dir = os.path.join(os.path.dirname(__file__), '..', 'modules', 'MCcubed')
 sys.path.append(mc3dir)
@@ -92,15 +92,13 @@ class Sampler(BaseSampler):
         self.check_nonnegint('burnin')
         # Check that required arguments are not none
         self.check_none('model')
-        self.check_none('outputdir')
         # Make sure outputdir is an absolute path & exists
-        self.make_abspath('outputdir')
-        self.make_dir(self.outputdir)
-        # Now update paths based on that, if needed
-        self.update_path('fbestp')
-        self.update_path('flog')
-        self.update_path('fsavefile')
-        self.update_path('fsavemodel')
+        if self.make_abspath('outputdir'):
+            # Now update paths based on that, if needed
+            self.update_path('fbestp')
+            self.update_path('flog')
+            self.update_path('fsavefile')
+            self.update_path('fsavemodel')
         # Ensure proper pnames exist as numpy array
         self.check_pnames()
         # Ready to run?
