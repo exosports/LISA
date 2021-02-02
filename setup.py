@@ -1,5 +1,7 @@
 import sys
+import os
 import subprocess
+from glob import glob
 import setuptools
 from setuptools.command.build_py import build_py
 
@@ -22,6 +24,9 @@ with open('./lisa/_version.py') as foo:
 with open('README', 'r') as foo:
     long_description = foo.read()
 
+docdir = os.path.join(os.path.dirname(__file__), 'doc')
+moddir = os.path.join(os.path.dirname(__file__), 'lisa', 'modules')
+
 setuptools.setup(
     name='lisa',
     version=VER,
@@ -32,7 +37,8 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/exosports/lisa',
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(), 
+    include_package_data=True, 
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

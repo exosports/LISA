@@ -5,12 +5,7 @@ import functools
 import numpy as np
 
 import dynesty_func as dyf
-# Works whether the run directory is within the LISA repo, or parallel to it
-# If executing from a different location than either of those, users will 
-# need to adjust the following sys.path.append accordingly.
-sys.path.append('../')
-sys.path.append('../LISA/')
-import LISA
+import lisa
 
 
 # Load the inputs, and true parameters
@@ -43,7 +38,7 @@ if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
 # Run it
-samp = LISA.run('dynesty', dlogz=0.001, fbestp='output_bestp.npy', 
+samp = lisa.run('dynesty', dlogz=0.001, fbestp='output_bestp.npy', 
                 fext='.png', fsavefile='output_posterior.npy', 
                 kll=None, loglike=loglike, model=func, 
                 niter=100000, nlive=1000, outputdir=outputdir, 

@@ -5,12 +5,7 @@ import functools
 import numpy as np
 
 import dnest4_func as dnf
-# Works whether the run directory is within the LISA repo, or parallel to it
-# If executing from a different location than either of those, users will 
-# need to adjust the following sys.path.append accordingly.
-sys.path.append('../')
-sys.path.append('../LISA/')
-import LISA
+import lisa
 
 
 # Load the inputs, and true parameters
@@ -48,7 +43,7 @@ if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
 # Run it
-samp = LISA.run('dnest4', fbestp='output_bestp.npy', 
+samp = lisa.run('dnest4', fbestp='output_bestp.npy', 
                 fext='.png', fsavefile='output_posterior.npy', 
                 kll=None, loglike=loglike, model=func, 
                 niter=10000, nlevel=30, nlevelint=1000, nperstep=100, 

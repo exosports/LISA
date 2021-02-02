@@ -5,12 +5,7 @@ import functools
 import numpy as np
 
 from mcmc_func import model
-# Works whether the run directory is within the LISA repo, or parallel to it
-# If executing from a different location than either of those, users will 
-# need to adjust the following sys.path.append accordingly.
-sys.path.append('../')
-sys.path.append('../LISA/')
-import LISA
+import lisa
 
 
 # Load the inputs, and true parameters
@@ -35,7 +30,7 @@ if not os.path.isdir(outputdir):
     os.mkdir(outputdir)
 
 # Run it
-samp = LISA.run('demc', burnin=4000, data=data, 
+samp = lisa.run('demc', burnin=4000, data=data, 
                 fbestp='output_bestp.npy', 
                 fext='.png', flog='MCMC.log', 
                 fsavefile='output_posterior.npy', fsavemodel=None, 

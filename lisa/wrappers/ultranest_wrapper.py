@@ -52,7 +52,10 @@ class Sampler(BaseSampler):
         self.pnames      = pnames
         self.prior       = prior
         self.pstep       = pstep
-        self.resume      = resume
+        if resume:
+            self.resume  = 'resume'
+        else:
+            self.resume  = 'overwrite'
         self.truepars    = truepars
         self.verb        = verb
         if self.verb:
