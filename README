@@ -103,16 +103,35 @@ you are now ready to use LISA!
 
 Executing LISA
 ===============
-LISA is designed to be imported into existing projects.  The main LISA.py file 
-contains a function, run(), which acts as the interface between a project 
-and the Bayesian samplers.  Run takes 2 arguments: the sampling algorithm as 
-a string (demc, dnest4, dynesty, snooker, multinest, or ultranest), 
-and a dictionary of the parameters for the sampler.  It will then execute the 
-inference, produce some plots, and return the posterior and best-fit 
-parameters.  For details on the sampler parameters, see the user manual.
+LISA is designed to be imported into existing projects.  LISA provides two 
+functions for usage: setup instantiates a sampler, while run performs setup, 
+runs the inference, and produces posterior plots.  For example,
+    import lisa
+    sampler = lisa.setup('demc')
+will set up a DEMC sampler object.  Users would then need to specify required 
+parameters, such as the data, uncertainties, phase space, etc.  For a list of 
+the required parameters,
+    print(sampler.reqpar)
+These parameters are attributes of the sampler object, and must be set to 
+execute the inference.  For example, if my data were y = x from 0 through 9, 
+    sampler.data = np.arange(10)
+Optional parameters are also available.  View those via
+    print(sampler.optpar)
+To get more information about some parameter P, there are two options:
+    sampler.help('P')
+    print(sampler.helpinfo['P'])
+Once all required parameters are specified, execute the inference via
+    sampler.run()
+and make plots of the posterior via
+    sampler.make_plots()
 
-For examples of how to incorporate LISA into your project, see the example/ 
-directory.
+Alternatively, if users already know what parameters to include, 
+    sampler = lisa.run(algorithm, keyword1=parameter1, keyword2=parameter2, ...)
+If a required parameter is missing, users can follow the above instructions 
+for adding the required parameters, run it, and produce plots.
+
+For more examples of how to incorporate LISA into your project, see the 
+example/ directory.
 
 
 Versions
