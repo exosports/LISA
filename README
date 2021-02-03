@@ -120,9 +120,14 @@ Optional parameters are also available.  View those via
 To get more information about some parameter P, there are two options:
     sampler.help('P')
     print(sampler.helpinfo['P'])
+
 Once all required parameters are specified, execute the inference via
     sampler.run()
-and make plots of the posterior via
+If the sampler object is not properly set up, LISA will print to terminal 
+the issues that must be corrected.  After fixing them, call the run() method 
+as before.
+
+To make plots of the posterior, enter
     sampler.make_plots()
 
 Alternatively, if users already know what parameters to include, 
