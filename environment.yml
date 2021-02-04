@@ -1,4 +1,4 @@
-name: lisa2
+name: lisa
 channels:
   - conda-forge
 dependencies:
