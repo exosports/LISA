@@ -26,6 +26,7 @@ class BaseSampler(object):
         # Default values
         self.nchains  = 1 # some samplers do not use these params, 
         self.thinning = 1 # but they are required for posterior plots
+        self.burnin   = 0 # or when re-loading output posterior
         # Dictionary of parameters and their descriptions
         self.helpinfo = {
         'beta' : 'float. DNest 4 only. From their docs: strength of effect ' + \
@@ -303,7 +304,9 @@ class BaseSampler(object):
         """
         Produces posterior plots
         """
-        if hasattr(self, 'outp'):
+        if hasattr(self, 'outp') or os.path.exists(self.fsavefile):
+            if not hasattr(self, 'outp'):
+                self.outp = np.load(self.fsavefile)
             mcp.trace(self.outp, parname=self.pnames[self.pstep>0], 
                       thinning=self.thinning, 
                       sep=np.size(self.outp[0]//self.nchains), 

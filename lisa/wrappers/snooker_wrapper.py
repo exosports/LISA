@@ -147,7 +147,9 @@ class Sampler(BaseSampler):
                                     savefile  = self.fsavefile,
                                     savemodel = self.fsavemodel, 
                                     resume    = self.resume)
-            # Save bestfit params
+            # Save posterior and bestfit params
+            if self.fsavefile is not None:
+                np.save(self.fsavefile, self.outp)
             if self.fbestp is not None:
                 np.save(self.fbestp, self.bestp)
             # Close the log
