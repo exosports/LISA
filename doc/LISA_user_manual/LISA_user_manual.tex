@@ -156,6 +156,13 @@ conda env update --file environment.yml
 \noindent This will build a base Python 3.7.2 environment, activate it, and then update 
 it with the packages necessary to run LISA.\newline
 
+\noindent Mac users may need to install additional tools:
+\begin{verbatim}
+xcode-select --install
+\end{verbatim}
+\noindent This installs make, gcc, git, and other utilities needed.\newline
+
+
 \noindent Now, install LISA:
 \begin{verbatim}
     python setup.py install
