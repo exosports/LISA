@@ -49,8 +49,8 @@ class BaseSampler(object):
                    'Must be NPY file.', 
         'fext' : 'str. File extension for saved plots. ' + \
                       'Options: .png, .pdf  Default: .png', 
-        'flog' : 'str. /path/to/log file to save out. ' + \
-                            'Default: MCMC.log, located in `outputdir`', 
+        'flog' : 'str. DEMC and snooker only. /path/to/log file to save out. ' + \
+                      'Default: MCMC.log, located in `outputdir`', 
         'fprefix' : 'str. Prefix for output filenames. Recommended to be ' + \
                          'a directory (possibly with a prefix for all ' + \
                          'produced files), as this will create a ' + \
@@ -70,8 +70,8 @@ class BaseSampler(object):
                             'Default: None', 
         'frac_remain' : 'float. UltraNest only. Sets the fraction ' + \
                                'remainder when integrating the posterior.', 
-        'hsize' : 'int. Number of samples per chain to seed the phase ' + \
-                       'space.  Default: 10', 
+        'hsize' : 'int. Snooker only.  Number of samples per chain to seed ' + \
+                       'the phase space.  Default: nchains+1', 
         'indparams' : 'list. Additional parameters needed by `func`.', 
         'kll' : 'object.  Datasketches KLL object, for model quantiles. ' + \
                          'Use None if not desired or if Datasketches is ' + \
@@ -89,6 +89,8 @@ class BaseSampler(object):
                           '`modelper` iterations.  E.g., if nchains=10 and ' + \
                           'modelper=5, splits every 50 model evaluations.  ' + \
                           'Default: 0', 
+        'multitry' : 'int. DREAM only. Determines whether to use multi-try ' + \
+                          'sampling. Default: 5', 
         'nchains' : 'int. Number of parallel samplers. Default: 1', 
         'niter' : 'int. Maximum number of iterations.  Nested samplers ' + \
                        'default to no limit.', 
@@ -220,9 +222,10 @@ class BaseSampler(object):
         """
         Checks attributes that must be non-negative integers.
         """
-        if getattr(self, attr) is None or getattr(self, attr) < 0 or \
-           type(getattr(self, attr)) != int:
-            print(attr, "must be a non-negative integer.")
+        val = getattr(self, attr)
+        if val is None or val < 0 or \
+           type(val) != int:
+            print(attr, "must be a non-negative integer.  Given:", val)
             self.unprepared += 1
 
     def check_pnames(self):
@@ -249,9 +252,9 @@ class BaseSampler(object):
         """
         Checks attributes that must be a positive integer.
         """
-        if getattr(self, attr) is None or getattr(self, attr) < 1 or \
-           type(getattr(self, attr)) != int:
-            print(attr, "must be a positive integer.")
+        val = getattr(self, attr)
+        if val is None or val < 1 or type(val) != int:
+            print(attr, "must be a positive integer.  Given:", val)
             self.unprepared += 1
 
     def make_abspath(self, attr):

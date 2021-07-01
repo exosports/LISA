@@ -18,7 +18,7 @@ class Sampler(BaseSampler):
     def __init__(self, burnin=None, data=None, fbestp='bestp.npy', 
                        fext='.png', flog='MCMC.log', 
                        fsavefile='output.npy', fsavemodel=None, 
-                       hsize=10, indparams=[], kll=None, model=None, 
+                       hsize=0, indparams=[], kll=None, model=None, 
                        modelper=0, nchains=1, niter=None, 
                        outputdir=None, 
                        pinit=None, pmax=None, pmin=None, pnames=None, 
@@ -122,7 +122,11 @@ class Sampler(BaseSampler):
         if self.prepare():
             # Open the log file
             if self.flog is not None:
-                logfile = open(self.flog, 'w')
+                if self.resume:
+                    mode = 'a'
+                else:
+                    mode = 'w'
+                logfile = open(self.flog, mode)
             else:
                 logfile = None
             # Run the MCMC

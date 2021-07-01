@@ -72,14 +72,15 @@ DEMCzs of ter Braak \& Vrugt (2008, `snooker'),
 MultiNest of Feroz et al. (2008) via PyMultiNest (Buchner et al. 2014), 
 UltraNest of Buchner (2016), 
 dynesty of Speagle (2019), 
-DNest4 of Brewer \& Foreman-Mackey (2018), and 
-polychord of Handley et al. (2015a, 2015b).  
+DNest4 of Brewer \& Foreman-Mackey (2018),  
+polychord of Handley et al. (2015a, 2015b), and
+MT-DREAMzs of Laloy and Vrugt (2012) via PyDREAM (\href{https://github.com/LoLab-VU/PyDREAM}{https://github.com/LoLab-VU/PyDREAM}).  
 We welcome users to contribute wrappers for additional 
 algorithms via a pull request on Github. \newline
 
 \noindent The detailed LISA code documentation and User Manual\footnote{Most recent version of the manual available at 
 \href{https://exosports.github.io/LISA/doc/LISA_User_Manual.html}{https://exosports.github.io/LISA/doc/LISA\_User\_Manual.html}} 
-are provided with the package to assist users in its usage. 
+are provided with the package to assist users. 
 For additional support, contact the lead author (see Section \ref{sec:team}). \newline
 
 \noindent LISA is released under the Reproducible Research Software License.  
@@ -116,11 +117,15 @@ versions of packages:
 \item Python 3.7.2
 \item Numpy 1.16.2
 \item Matplotlib 3.0.2
-\item Scipy 1.2.1
+\item mpi4py 3.0.3
+\item Scipy 1.5.3
+\item h5py 2.9.0
+\item MULTINEST 3.10
 \item pymultinest 2.10
 \item ultranest 2.2.2
 \item dynesty 1.0.1
 \item DNest4 0.2.4
+\item PyDREAM 2.0.0
 \end{itemize}
 
 
@@ -205,7 +210,7 @@ the true parameters, respectively.  The x-axis is assumed to be the integers
 from -5 to 5, inclusive, and the uncertainty is assumed to be the square root 
 of the true data.\newline
 
-\noindent Now, (take a look at and) execute LISA for each of the samplers:
+\noindent Now, take a look at and execute LISA for each of the samplers:
 
 \begin{verbatim}
 ./demc_example.py
@@ -232,17 +237,19 @@ algorithm.
 
 \subsection{Sampling Algorithm}
 
-LISA currently supports 6 Bayesian sampling algorithms:
+LISA currently supports 8 Bayesian sampling algorithms:
 \begin{itemize}
 \item demc   : DEMC MCMC algorithm of ter Braak (2006)
 \item dnest4 : Diffusive NS implementation of Brewer \& Foreman-Mackey (2018)
+\item dream  : MT-DREAMzs algorithm of Laloy and Vrugt (2012)
 \item dynesty: Dynamic NS of Speagle (2019)
+\item polychord: PolyChord NS algorithm of Handley et al. (2015a, 2015b)
 \item snooker  : DEMCzs MCMC algorithm of ter Braak \& Vrugt (2008)
 \item multinest: MultiNest NS algorithm of Feroz et al. (2008)
 \item ultranest: UltraNest NS algorithm of Buchner (2014, 2016, 2019).
 \end{itemize}
 
-\noindent The choice of sampling algorithm also dictates the allowed inputs.  
+\noindent The choice of sampling algorithm also decides the allowed inputs.  
 Each sampler's inputs are listed in the following subsections.  Bold 
 indicates a parameter that must be specified (typically, they have no default); 
 optional parameters are given reasonable defaults.  Section 
@@ -279,6 +286,26 @@ so users are encouraged to experiment with them.
 \item \textbf{uncert}
 \item verb
 \end{itemize}
+
+\subsubsection{dream}
+\item burnin
+\item fbestp
+\item fext
+\item fprefix
+\item fsavefile
+\item \textbf{loglike}
+\item multitry
+\item \textbf{nchains}
+\item \textbf{niter}
+\item \textbf{outputdir}
+\item \textbf{pmax}
+\item \textbf{pmin}
+\item pnames
+\item pstep
+\item resume
+\item thinning
+\item truepars
+\item verb
 
 \subsubsection{dnest4}
 \begin{itemize}
@@ -408,6 +435,8 @@ To utilize default values, do not include it in **kwargs.
                       `modelper` iterations.  E.g., if nchains=10 and  
                       modelper=5, splits every 50 model evaluations.   
                       Default: 0
+\item multitry : int. DREAM only. Determines whether to use multi-try sampling. 
+                      Default: 5
 \item nchains : int. Number of parallel samplers. Default: 1
 \item niter : int. Maximum number of iterations.  Nested samplers  
                        default to no limit.

@@ -4,3 +4,6 @@
 [submodule "modules/PolyChordLite"]
 	path = lisa/modules/PolyChordLite
 	url = https://github.com/PolyChord/PolyChordLite
+[submodule "lisa/modules/PyDREAM"]
+	path = lisa/modules/PyDREAM
+	url = https://github.com/LoLab-VU/PyDREAM

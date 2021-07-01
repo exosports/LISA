@@ -34,29 +34,24 @@ def setup(alg, **kwargs):
     Sampler object, with the supplied **kwargs set.
     """
     if alg == 'demc':
-        #from demc_wrapper      import Sampler
         Sampler = wrappers.demc_wrapper.Sampler
     elif alg == 'dnest4':
-        #from dnest4_wrapper    import Sampler
         Sampler = wrappers.dnest4_wrapper.Sampler
+    elif alg == 'dream':
+        Sampler = wrappers.dream_wrapper.Sampler
     elif alg == 'dynesty':
-        #from dynesty_wrapper   import Sampler
         Sampler = wrappers.dynesty_wrapper.Sampler
     elif alg == 'multinest':
-        #from multinest_wrapper import Sampler
         Sampler = wrappers.multinest_wrapper.Sampler
     elif alg == 'polychord':
-        #from polychord_wrapper import Sampler
         Sampler = wrappers.polychord_wrapper.Sampler
     elif alg == 'snooker':
-        #from snooker_wrapper   import Sampler
         Sampler = wrappers.snooker_wrapper.Sampler
     elif alg == 'ultranest':
-        #from ultranest_wrapper import Sampler
         Sampler = wrappers.ultranest_wrapper.Sampler
     else:
-        raise ValueError("The supplied algorithm does not exist in LISA.\n" + \
-                         "Options: demc, dnest4, dynesty, multinest, " + \
+        raise ValueError("The supplied algorithm does not exist in LISA.\n"   +\
+                         "Options: demc, dnest4, dream, dynesty, multinest, " +\
                          "polychord, snooker, ultranest\nReceived: " + alg)
     return Sampler(**kwargs)
 

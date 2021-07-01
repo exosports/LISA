@@ -25,10 +25,13 @@ the following sampling methods are available:
     DE-MC (ter Braak 2006), via a fork (https://github.com/mdhimes/mc3/tree/mpi)
                             of MC3 (https://github.com/pcubillos/mc3)
     DE-MC with snooker updates (ter Braak & Vrugt 2008), via MC3 fork
+    DNest4 (Brewer & Foreman-Mackey 2018)
+    DREAM with snooker updates and multi-try (Laloy & Vrugt 2012), via PyDREAM 
+                                           (https://github.com/LoLab-VU/PyDREAM)
     dynesty (Speagle 2019; https://github.com/joshspeagle/dynesty)
     MULTINEST (Feroz et al. 2009), via PyMultiNest (Buchner et al. 2014; 
                                  https://github.com/JohannesBuchner/PyMultiNest)
-    polychord (Handley et al. 2015a, 2015b; 
+    PolyChord (Handley et al. 2015a, 2015b; 
                https://github.com/PolyChord/PolyChordLite)
     UltraNest (Buchner 2014, 2019; https://github.com/JohannesBuchner/UltraNest)
 
@@ -128,8 +131,8 @@ To get more information about some parameter P, there are two options:
 Once all required parameters are specified, execute the inference via
     sampler.run()
 If the sampler object is not properly set up, LISA will print to terminal 
-the issues that must be corrected.  After fixing them, call the run() method 
-as before.
+the issues that must be corrected, provided that the `verb` parameter is at 
+least 1.  After fixing them, call the run() method as before.
 
 To make plots of the posterior, enter
     sampler.make_plots()
@@ -151,13 +154,14 @@ versions of packages:
  - Numpy 1.16.2
  - Matplotlib 3.0.2
  - mpi4py 3.0.3
- - Scipy 1.5.0
- - MULTINEST 3.10
- - PyMultiNest 2.9
- - UltraNest 2.2.1
+ - Scipy 1.5.3
  - h5py 2.9.0
+ - MULTINEST 3.10
+ - PyMultiNest 2.10
+ - UltraNest 2.2.2
  - dynesty 1.0.1
  - dnest4 0.2.4
+ - PyDREAM 2.0.0
 
 
 Be kind

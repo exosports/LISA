@@ -5,8 +5,10 @@ Sampler: class to setup and run an inference
 """
 
 import sys, os
+import multiprocessing as mp
 import numpy as np
 import matplotlib.pyplot as plt
+
 import dynesty
 
 from .helper import BaseSampler
@@ -15,10 +17,10 @@ from .helper import BaseSampler
 class Sampler(BaseSampler):
     def __init__(self, bound='multi', dlogz=0.1, fbestp='bestp.npy', 
                        fext='.png', fsavefile='output.npy', kll=None, 
-                       loglike=None, min_ess=500, model=None, niter=None, 
-                       nlive=500, nlive_batch=500, outputdir=None, pnames=None, 
-                       prior=None, pstep=None, sample='auto', truepars=None, 
-                       verb=0):
+                       loglike=None, min_ess=500, model=None, nchains=1, 
+                       niter=None, nlive=500, nlive_batch=500, outputdir=None, 
+                       pnames=None, prior=None, pstep=None, sample='auto', 
+                       truepars=None, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -45,6 +47,7 @@ class Sampler(BaseSampler):
         self.loglike     = loglike
         self.min_ess     = min_ess
         self.model       = model
+        self.nchains     = nchains
         self.niter       = niter
         self.nlive       = nlive
         self.nlive_batch = nlive_batch
@@ -74,6 +77,7 @@ class Sampler(BaseSampler):
         self.check_nonnegfloat('dlogz')
         # Check positive int inputs
         self.check_posint('min_ess')
+        self.check_posint('nchains')
         self.check_posint('nlive')
         self.check_posint('nlive_batch')
         # Check that required arguments are not none
@@ -104,11 +108,15 @@ class Sampler(BaseSampler):
         if self.prepare():
             # Setup the inference
             ndim = np.sum(self.pstep > 0)
+            if self.nchains > 1:
+                p = mp.Pool(self.nchains)
             dy   = dynesty.DynamicNestedSampler(self.loglike, 
                                                 self.prior, 
                                                 ndim, 
                                                 bound=self.bound, 
-                                                sample=self.sample)
+                                                sample=self.sample, 
+                                                queue_size=self.nchains, 
+                                                pool=p)
 
             # Run it
             dy.run_nested(nlive_init=self.nlive, 
