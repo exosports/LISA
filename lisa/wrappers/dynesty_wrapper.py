@@ -110,13 +110,13 @@ class Sampler(BaseSampler):
             ndim = np.sum(self.pstep > 0)
             if self.nchains > 1:
                 p = mp.Pool(self.nchains)
-            dy   = dynesty.DynamicNestedSampler(self.loglike, 
-                                                self.prior, 
-                                                ndim, 
-                                                bound=self.bound, 
-                                                sample=self.sample, 
-                                                queue_size=self.nchains, 
-                                                pool=p)
+            dy = dynesty.DynamicNestedSampler(self.loglike, 
+                                              self.prior, 
+                                              ndim, 
+                                              bound=self.bound, 
+                                              sample=self.sample, 
+                                              queue_size=self.nchains, 
+                                              pool=p)
 
             # Run it
             dy.run_nested(nlive_init=self.nlive, 
