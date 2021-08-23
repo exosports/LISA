@@ -5,7 +5,7 @@ Sampler: class to setup and run an inference
 """
 
 import sys, os
-import multiprocessing as mp
+import multiprocess as mp
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -110,13 +110,19 @@ class Sampler(BaseSampler):
             ndim = np.sum(self.pstep > 0)
             if self.nchains > 1:
                 p = mp.Pool(self.nchains)
-            dy = dynesty.DynamicNestedSampler(self.loglike, 
-                                              self.prior, 
-                                              ndim, 
-                                              bound=self.bound, 
-                                              sample=self.sample, 
-                                              queue_size=self.nchains, 
-                                              pool=p)
+                dy = dynesty.DynamicNestedSampler(self.loglike, 
+                                                  self.prior, 
+                                                  ndim, 
+                                                  bound=self.bound, 
+                                                  sample=self.sample, 
+                                                  queue_size=self.nchains, 
+                                                  pool=p)
+            else:
+                dy = dynesty.DynamicNestedSampler(self.loglike, 
+                                                  self.prior, 
+                                                  ndim, 
+                                                  bound=self.bound, 
+                                                  sample=self.sample)
 
             # Run it
             dy.run_nested(nlive_init=self.nlive, 

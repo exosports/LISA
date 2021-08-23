@@ -52,6 +52,7 @@ class Sampler(BaseSampler):
         self.fsavefile  = fsavefile
         self.loglike    = loglike
         self.fprefix    = fprefix
+        self.multitry   = multitry
         self.nchains    = nchains
         self.niter      = niter
         self.outputdir  = outputdir
@@ -131,9 +132,23 @@ class Sampler(BaseSampler):
             ibest      = np.where(log_ps == log_ps.max())
             self.bestp = history[ibest[0][0], :, ibest[1][0]]
             # Convergence criteria
-            convergence = mc3.mc.convergetest(history)
-            print("Rhat convergence metric:")
-            print(convergence)
+            try:
+                convergence = mc3.mc.convergetest(history)
+                print("Rhat convergence metric:")
+                print(convergence)
+            except Exception as e:
+                print("Unable to determine Rhat convergence metric:")
+                print(e)
+            # Sample size
+            try:
+                speis, ess = mc3.mc.ess(history)
+                print("Steps per effective independent sample:")
+                print(speis)
+                print("Effective sample size:")
+                print(ess)
+            except Exception as e:
+                print("Unable to determine effective sample size:")
+                print(e)
             # Stack the posterior
             self.outp = history[0, :, self.burnin:]
             for i in range(1, self.nchains):
