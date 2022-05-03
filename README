@@ -44,12 +44,13 @@ to be submitted via pull requests on Github.  To be accepted, such improvements
 must be generally consistent with the existing coding style, and all changes 
 must be updated in associated documentation.
 
-LISA is released under a Reproducible Research License.  Users are free to 
-use the software for personal reasons.  Users publishing results from LISA 
-or modified versions of it in a peer-reviewed journal are required to publicly 
-release all necessary code/data to reproduce the published work.  Modified 
-versions of LISA are required to also be released open source under the same 
-Reproducible Research License.  For more details, see the text of the license.
+LISA is released under the Reproducible Research Software License.  Users are 
+free to use the software for personal reasons.  Users publishing results from 
+LISA or modified versions of it in a peer-reviewed journal are required to 
+publicly release all necessary code/data to reproduce the published work.  
+Modified versions of LISA are required to also be released open source under 
+the same Reproducible Research License.  For more details, see the text of the 
+license.
 
 
 Files & Directories
