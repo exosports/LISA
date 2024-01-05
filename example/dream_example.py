@@ -37,7 +37,7 @@ if not os.path.isdir(outputdir):
 # Run it
 samp = lisa.run('dream', fbestp='output_bestp.npy', fext='.png', 
                          fprefix='model', fsavefile='output_posterior.npy', 
-                         loglike=loglike, nchains=4, niter=100000, 
+                         loglike=loglike, nchains=4, niter=30000, 
                          outputdir=outputdir, pmax=pmax, pmin=pmin, pnames=pnames, 
                          pstep=pstep, thinning=1, truepars=pars, verb=1)
 

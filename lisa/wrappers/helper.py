@@ -5,6 +5,7 @@ import numpy as np
 mcpdir = os.path.join(os.path.dirname(__file__), '..', 'modules', 'MCcubed', 
                                                        'MCcubed', 'plots')
 sys.path.append(mcpdir)
+sys.path.append(os.path.join(mcpdir, '..', 'lib')) # so that mcplots finds binarray
 import mcplots as mcp
 
 

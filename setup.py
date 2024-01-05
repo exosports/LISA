@@ -44,8 +44,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
         ],
     python_requires='>=3.6',
-    install_requires=['numpy>=1.16', 'cython>=0.29.5', 'matplotlib>=3.0', 
-                      'pymultinest==2.9', 'ultranest==2.2.1', 'dynesty==1.0.1', 
-                      'dnest4==0.2.4', 'mpi4py==3.0.3'], 
+    install_requires=['numpy>=1.16', 'matplotlib>=3.0', 
+                      'pymultinest==2.9', 'ultranest>=2.2.1', 'dynesty>=1.0.1', 
+                      'dnest4>=0.2.4', 'mpi4py>=3.0.3'], 
     cmdclass={'build_py': lisa_build}
     )
