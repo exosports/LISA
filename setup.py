@@ -12,7 +12,7 @@ class lisa_build(build_py):
     From https://stackoverflow.com/a/45349660
     """
     def run(self):
-        if subprocess.call(["make", "all"]) != 0:
+        if subprocess.call(["make", "-k", "all"]) != 0:
             sys.exit(-1)
         build_py.run(self)
 
