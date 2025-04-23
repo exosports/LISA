@@ -1,0 +1,626 @@
+% LISA User Manual
+%
+% Please note this document will be automatically compiled and hosted online
+% after each commit to master. Because of this, renaming or moving the
+% document should be done carefully. To see the compiled document, go to
+% https://exosports.github.io/LISA/doc/LISA_User_Manual.html
+
+\documentclass[letterpaper, 12pt]{article}
+\input{top-LISA_user_manual}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+\textsc{\LARGE University of Central Florida}\\[1.5cm]
+
+% Title
+\rule{\linewidth}{0.5mm} \\[0.4cm]
+{ \huge \bfseries LISA Users Manual \\[0.4cm] }
+\rule{\linewidth}{0.5mm} \\[1.0cm]
+
+\textsc{\Large Large-selection Interface for Sampling Algorithms}\\[1.5cm]
+
+% Author and supervisor
+\noindent
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft}
+\large
+\emph{Authors:} \\
+Michael D. \textsc{Himes} \\
+\end{flushleft}
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr.~Joseph \textsc{Harrington}
+\end{flushright}
+\end{minipage}
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Team Members}
+\label{sec:team}
+
+\begin{itemize}
+\item \href{https://github.com/mdhimes/}{Michael Himes}%
+  \footnote{https://github.com/mdhimes/}, University of
+  Central Florida (mhimes@knights.ucf.edu)
+\item Joseph Harrington, University of Central Florida
+\end{itemize}
+
+\section{Introduction}
+\label{sec:theory}
+
+\noindent This document describes LISA, the Large-selection Interface for 
+Sampling Algorithms.  LISA provides a unified interface for different 
+Bayesian samplers, both Markov chain Monte Carlo (MCMC) and nested sampling 
+(NS).  \newline
+
+\noindent Presently, LISA supports the 
+DEMC algorithm of ter Braak (2006), 
+DEMCzs of ter Braak \& Vrugt (2008, `snooker'), 
+MultiNest of Feroz et al. (2008) via PyMultiNest (Buchner et al. 2014), 
+UltraNest of Buchner (2016), 
+dynesty of Speagle (2019), 
+DNest4 of Brewer \& Foreman-Mackey (2018),  
+polychord of Handley et al. (2015a, 2015b), and
+MT-DREAMzs of Laloy and Vrugt (2012) via PyDREAM (\href{https://github.com/LoLab-VU/PyDREAM}{https://github.com/LoLab-VU/PyDREAM}).  
+We welcome users to contribute wrappers for additional 
+algorithms via a pull request on Github. \newline
+
+\noindent The detailed LISA code documentation and User Manual\footnote{Most recent version of the manual available at 
+\href{https://exosports.github.io/LISA/doc/LISA_User_Manual.html}{https://exosports.github.io/LISA/doc/LISA\_User\_Manual.html}} 
+are provided with the package to assist users. 
+For additional support, contact the lead author (see Section \ref{sec:team}). \newline
+
+\noindent LISA is released under the Reproducible Research Software License.  
+For details, see \\
+\href{https://planets.ucf.edu/resources/reproducible-research/software-license/}{https://planets.ucf.edu/resources/reproducible-research/software-license/}.\newline
+
+\noindent The LISA package is organized as follows: \newline
+% The framebox and minipage are necessary because dirtree kills the
+% indentation.
+\noindent\framebox{\begin{minipage}[t]{0.97\columnwidth}%
+\dirtree{%
+ .1 LISA. 
+ .2 doc.
+ .2 example.
+ .2 lib. 
+ .2 modules. 
+ .3 MCcubed. 
+}
+\end{minipage}}
+\vspace{0.7cm}
+% \newline is not working here, therefore I use vspace.
+% (because dirtree is such a pain in the ass)
+
+\section{Installation}
+\label{sec:installation}
+
+\subsection{System Requirements}
+\label{sec:requirements}
+
+\noindent LISA was developed on a Linux machine using the following 
+versions of packages:
+
+\begin{itemize}
+\item Python 3.7.2
+\item Numpy 1.16.2
+\item Matplotlib 3.0.2
+\item mpi4py 3.0.3
+\item Scipy 1.5.3
+\item h5py 2.9.0
+\item MULTINEST 3.10
+\item pymultinest 2.10
+\item ultranest 2.2.2
+\item dynesty 1.0.1
+\item DNest4 0.2.4
+\item PyDREAM 2.0.0
+\end{itemize}
+
+
+\subsection{Install and Compile}
+\label{sec:install}
+
+\noindent To begin, obtain the latest stable version of LISA.  \newline
+
+\noindent First, decide on a local directory to hold LISA.  Let the path to this 
+directory be `LISA'.  Now, recursively clone the repository:
+\begin{verbatim}
+git clone --recursive https://github.com/exosports/LISA LISA/
+cd LISA/
+\end{verbatim}
+
+\noindent LISA contains a file to easily build a conda environment capable of 
+executing the software.  Create the environment and activate it via
+
+\begin{verbatim}
+conda env create -f environment.yml
+conda activate lisa
+\end{verbatim}
+
+\noindent On some systems, this approach may fail.  For a more robust approach that 
+requires additional steps, enter
+
+\begin{verbatim}
+conda create -n lisa python=3.7.2
+conda activate lisa
+conda env update --file environment.yml
+\end{verbatim}
+
+\noindent This will build a base Python 3.7.2 environment, activate it, and then update 
+it with the packages necessary to run LISA.\newline
+
+\noindent Mac users may need to install additional tools:
+\begin{verbatim}
+xcode-select --install
+\end{verbatim}
+\noindent This installs make, gcc, git, and other utilities needed.\newline
+
+
+\noindent Now, install LISA:
+\begin{verbatim}
+    python setup.py install
+\end{verbatim}
+\noindent This will compile required submodules and build an importable 
+package.\newline
+
+\noindent To check that everything installed properly, start up a Python 
+session and try 
+\begin{verbatim}
+    import lisa
+\end{verbatim}
+\noindent If it succeeds without warnings about missing MultiNest files, 
+you are now ready to use LISA!
+
+
+\section{Example}
+\label{sec:example}
+
+The following script will walk a user through using LISA for a basic quadratic 
+fit.
+
+\noindent To begin, copy the requisite files to a directory parallel to LISA. 
+Beginning from LISA/, 
+\begin{verbatim}
+mkdir ../run
+cp -a ./example/* ../run/.
+cd ../run
+\end{verbatim}
+
+\noindent Make your test data.  Execute the provided script with 
+desired parameters.  For example, data following \math{3x^2 - x + 2} 
+would be created via
+\begin{verbatim}
+./make_data.py 3 -1 2
+\end{verbatim}
+\noindent This will produce true.npy, data.npy, uncert.npy, and params.npy, 
+which contain the true data, noisy data, uncertainty on each data point, and 
+the true parameters, respectively.  The x-axis is assumed to be the integers 
+from -5 to 5, inclusive, and the uncertainty is assumed to be the square root 
+of the true data.\newline
+
+\noindent Now, take a look at and execute LISA for each of the samplers:
+
+\begin{verbatim}
+./demc_example.py
+./dnest4_example.py
+./dynesty_example.py
+./snooker_example.py
+./multinest_example.py
+./polychord_example.py
+./ultranest_example.py
+\end{verbatim}
+
+\noindent Each will produce some output files (logs, plots, etc.) in 
+appropriately-named subdirectories.\newline
+
+
+\section{Program Inputs}
+\label{sec:inputs}
+
+LISA's design as an importable package allows for convenient usage in existing 
+codes.  Users interact with LISA through its \tt{setup} or \tt{run} functions. 
+Each has 1 position argument (the desired algorithm; options are listed below), 
+and they take keyword arguments for the different parameters of the sampling 
+algorithm.  
+
+\subsection{Sampling Algorithm}
+
+LISA currently supports 8 Bayesian sampling algorithms:
+\begin{itemize}
+\item demc   : DEMC MCMC algorithm of ter Braak (2006)
+\item dnest4 : Diffusive NS implementation of Brewer \& Foreman-Mackey (2018)
+\item dream  : MT-DREAMzs algorithm of Laloy and Vrugt (2012)
+\item dynesty: Dynamic NS of Speagle (2019)
+\item polychord: PolyChord NS algorithm of Handley et al. (2015a, 2015b)
+\item snooker  : DEMCzs MCMC algorithm of ter Braak \& Vrugt (2008)
+\item multinest: MultiNest NS algorithm of Feroz et al. (2008)
+\item ultranest: UltraNest NS algorithm of Buchner (2014, 2016, 2019).
+\end{itemize}
+
+\noindent The choice of sampling algorithm also decides the allowed inputs.  
+Each sampler's inputs are listed in the following subsections.  Bold 
+indicates a parameter that must be specified (typically, they have no default); 
+optional parameters are given reasonable defaults.  Section 
+\ref{sec:param-desc} describes each parameter.  Note that some `optional' 
+parameters can strongly influence the results (e.g., dlogz for nested samplers),
+so users are encouraged to experiment with them.
+
+\subsubsection{demc \& snooker}
+\label{sec:mcmc-inputs}
+\begin{itemize}
+\item \textbf{burnin}
+\item \textbf{data}
+\item fbestp
+\item fext
+\item flog
+\item fsavefile
+\item fsavemodel
+\item hsize (only snooker)
+\item indparams
+\item kll
+\item \textbf{model}
+\item modelper
+\item \textbf{nchains}
+\item \textbf{niter}
+\item \textbf{outputdir}
+\item \textbf{pinit}
+\item \textbf{pmax}
+\item \textbf{pmin}
+\item pnames
+\item \textbf{pstep}
+\item resume
+\item thinning
+\item truepars
+\item \textbf{uncert}
+\item verb
+\end{itemize}
+
+\subsubsection{dream}
+\begin{itemize}
+\item burnin
+\item fbestp
+\item fext
+\item fprefix
+\item fsavefile
+\item \textbf{loglike}
+\item multitry
+\item \textbf{nchains}
+\item \textbf{niter}
+\item \textbf{outputdir}
+\item \textbf{pmax}
+\item \textbf{pmin}
+\item pnames
+\item pstep
+\item resume
+\item thinning
+\item truepars
+\item verb
+\end{itemize}
+
+\subsubsection{dnest4}
+\begin{itemize}
+\item beta
+\item fbestp
+\item fext
+\item fsavefile
+\item kll
+\item lam
+\item \textbf{loglike}
+\item \textbf{model}
+\item \textbf{niter}
+\item \textbf{nlevel}
+\item \textbf{nlevelint}
+\item \textbf{nperstep}
+\item \textbf{outputdir}
+\item \textbf{perturb}
+\item pnames
+\item \textbf{prior}
+\item \textbf{pstep}
+\item resample
+\item truepars
+\item verb
+\end{itemize}
+
+\subsubsection{dynesty, multinest, polychord, \& ultranest}
+\label{sec:ns-inputs}
+\begin{itemize}
+\item bound (only dynesty)
+\item dlogz
+\item dumper
+\item fbestp
+\item fcheckpoint (only dynesty)
+\item fext
+\item frac\_remain (only ultranest)
+\item fprefix (only multinest)
+\item fsavefile
+\item kll
+\item Lepsilon (only ultranest)
+\item \textbf{loglike}
+\item min\_ess (only dynesty \& ultranest)
+\item \textbf{model}
+\item niter
+\item \textbf{nlive}
+\item \textbf{nlive\_batch} (only dynesty)
+\item nrepeat (only polychord)
+\item \textbf{outputdir}
+\item pnames
+\item \textbf{prior}
+\item \textbf{pstep}
+\item resume (all except dynesty)
+\item sample (only dynesty)
+\item truepars
+\item verb
+\end{itemize}
+
+\subsection{Parameter Dictionary}
+\label{sec:param-desc}
+
+Users are only required to specify the relevant parameters listed in 
+the previous section.  Each parameter is described below, alphabetically.
+To utilize default values, do not include it in **kwargs.
+
+\begin{itemize}
+\item beta : float. DNest4 only. From their docs: strength of effect 
+                    to force histogram to equal push.  Default: 100.0
+\item bound : str. Dynesty only. Option to bound the target  
+                   distribution. Choices: none (sample from unit  
+                   cube), single (one ellipsoid), multi (multiple  
+                   possibly overlapping ellipsoids), balls  
+                   (overlapping balls centered on each live point),  
+                   cubes (overlapping cubes centered on each live  
+                   point).  Default: multi
+\item burnin : int. Number of initial iterations to be discarded.
+\item data : array, Numpy binary. Measured data for inference.  
+                    Must be Numpy array, list, or a path to a NPY file.
+\item dlogz : float. Target evidence uncertainty (stops when below  
+                     this value).  Lower = more accurate, but also 
+                     requires longer runtime. Default: 0.1
+\item dumper : object.  Polychord only.  Function to output info 
+                        during the inference.  Default: None
+\item fbestp : str. Filename for array of best-fit parameters.  
+                    Must be NPY file.
+\item fcheckpoint: str. Dynesty only.  Path to save checkpoint file 
+                        to allow for resuming the run.  If a relative path, 
+                        assumes it is relative to `outputdir`.  
+                        Default: dynesty.save, located in `outputdir`
+\item fext : str. File extension for saved plots.  
+                  Options: .png, .pdf  Default: .png
+\item flog : str. MCMCs only. /path/to/log file to save out.  
+                  Default: MCMC.log, located in `outputdir`
+\item fprefix : str. Prefix for output filenames. Recommended to be 
+                     a directory (possibly with a prefix for all 
+                     produced files), as this will create a 
+                     subdirectory within `outputdir`. 
+                     Default: pmn/ for multinest, 
+                              run1 for polychord.
+\item fsavefile : str. Filename to store parameters explored.  
+                            If relative path, it is considered with  
+                            respect to `outputdir`.   
+                            Default: `outputdir`/output.npy
+\item fsavemodel : str. MCMCs only (currently). 
+                        Filename to store models, corresponding to  
+                        the parameters. If relative path, it is  
+                        considered with respect to `outputdir`.   
+                        If None, file is not saved.   
+                        Beware: the file may be extremely large  
+                        if the model output has high dimensionality. 
+                        See `modelper' to have it automatically split into 
+                        subfiles.
+                        Default: None
+\item frac\_remain : float. UltraNest only. Sets the fraction  
+                            remainder when integrating the posterior.
+\item hsize : int. Snooker only. Number of samples per chain to seed the 
+                   phase space.  Default: 10
+\item indparams : list. MCMCs only. Additional parameters needed by `model`.
+\item kll : object.  Datasketches KLL object, for model quantiles.  
+                     Use None if not desired or if Datasketches is  
+                     not installed.  Default: None
+\item lam : float. DNest 4 only. From their docs: backtracking scale 
+                   length.  Default: 5.0
+\item Lepsilon : float. UltraNest only. From their docs: "Terminate  
+                        when live point likelihoods are all the same,  
+                        within Lepsilon tolerance."
+\item loglike : object. Nested samplers only.  Function defining the log 
+                        likelihood.
+\item min\_ess : int. Minimum effective sample size (ESS). Default: 500
+\item model : object. Function defining the forward model.
+\item modelper : int. MCMCs only. Sets how to split `fsavemodel` 
+                      into subfiles.   
+                      If 0, does not split.  If >0, saves out every  
+                      `modelper` iterations.  E.g., if nchains=10 and  
+                      modelper=5, splits every 50 model evaluations.   
+                      Default: 0
+\item multitry : int. DREAM only. Determines whether to use multi-try sampling. 
+                      Default: 5
+\item nchains : int. Number of parallel samplers. Default: 1
+\item niter : int. Maximum number of iterations.  Nested samplers  
+                       default to no limit.
+\item nlive : int. (Minimum) number of live points to use. Default: 500
+\item nlive\_batch: int. Dynesty only. From their docs: "The number of  
+                         live points used when adding additional  
+                         samples from a nested sampling run within  
+                         each batch."  Default: 500.
+\item nlevel : int. DNest4 only. From their docs: Maximum number of levels to 
+                    create.  Default: 30
+\item nlevelint : int. DNest4 only. Number of moves before creating new level. 
+                       Default: 10000
+\item nperstep : int. DNest4 only. Number of moves per MCMC iteration.  
+                      Default: 10000
+\item nrepeat : int. Polychord only.  From their docs: The number of 
+                     slice slice-sampling steps to generate a new 
+                     point.  Increasing [nrepeat] increases the 
+                     reliability of the algorithm.  Default: None 
+                     (uses polychord's default of 5*ndims)
+\item outputdir : str. path/to/directory where output will be saved.
+\item perturb : object. DNest4 only. Function that proposes changes to 
+                        parameter values.
+\item pinit : array, Numpy binary. For MCMCs, initial parameters for  
+                            samplers.  For nested sampling algorithms,  
+                            values are used for parameters that are held  
+                            constant, if any. 
+                        Must be Numpy array, list, or a path to a NPY file.
+\item pmax : array, Numpy binary. Maximum value for each parameter. 
+                        Must be Numpy array, list, or a path to a NPY file.
+\item pmin : array, Numpy binary. Minimum value for each parameter. 
+                        Must be Numpy array, list, or a path to a NPY file.
+\item pnames : array. Name of each parameter (can use some LaTeX if  
+                          desired). 
+                          Must be Numpy array or list.
+\item prior : object. Function defining the prior.
+\item pstep : array. Step size for each parameter.  For MCMCs, only  
+                         matters for the initial samples and determining  
+                         constant parameters, as step size is  
+                         automatically adjusted.  For nested sampling  
+                         algorithms, only used to determine constant  
+                         parameters.
+\item resample : float. DNest4 only. Must be non-negative.  
+                         If >0, corresponds to a factor affecting the 
+                         number of draws from the posterior.  If 0, no 
+                         resampling is performed.  Default: 100
+\item resume: bool.  Determines whether to resume a previous run, if possible. 
+                     Default: False
+\item sample : str. Dynesty only. Sampling method. Choices  
+                        (descriptions from their docs): unif (uniform  
+                        sampling), rwalk (random walks from current live  
+                        point), rstagger (random "staggering" away from  
+                        current live point), slice (multivariate slice  
+                        sampling), rslice (random slice sampling), hslice  
+                        ("Hamiltonian" slice sampling), auto  
+                        (automatically selected based on problem  
+                        dimensionality).  Default: auto
+\item thinning : int. Thinning factor for the posterior  
+                      (keep every N iterations).  
+                      Example: a thinning factor of 3 will keep every  
+                      third iteration.  Only recommended when the  
+                      computed posterior is extremely large.   
+                      Default: 1
+\item truepars : array, Numpy binary. Known true values for the model  
+                          parameters.  If unknown, use None.  Default: None
+\item uncert : array, Numpy binary. Data uncertainties. 
+                        Must be Numpy array, list, or a path to a NPY file.
+\item verb : int. Verbosity level.  If 0, only essential messages 
+                       are printed by LISA.  If 1, prints additional 
+                       messages (e.g., loading data files).  
+                       In the future, additional levels may be added.  
+                       Default: 0
+\end{itemize}
+
+
+\section{Program Outputs}
+\label{sec:outputs}
+
+LISA has two main functions: \tt{setup} and \tt{run}.  \tt{setup} returns 
+an initialized Sampler object.  \tt{run} returns the Sampler object (with 
+additional attributes: outp for the posterior and bestp for the best parameters) and produces at least 3 plots.
+
+\subsection{Returns}
+\begin{itemize}
+\item samp: Sampler object. Contains the attributes listed Sections 
+\ref{sec:mcmc-inputs} -- \ref{sec:ns-inputs}.
+\end{itemize}
+
+\subsection{Output Files}
+\begin{itemize}
+\item pairwise: corner plot of histograms of the 2D marginalized posteriors.
+\item posterior: histogram plots of the 1D marginalized posteriors.
+\item trace: parameter history plots.
+\end{itemize}
+
+\noindent If fsavefile and fbestp are not None, there are two NPY files 
+produced.
+\begin{itemize}
+\item bestp.npy: Array of best parameters.
+\item outp.npy: Array of the approximation to the posterior.
+\end{itemize}
+
+\noindent Except for dynesty, each sampler also has additional output files, 
+briefly discussed below.\newline
+
+\subsection{demc \& snooker}
+\begin{itemize}
+\item MCMC.log: text file with statistics about the MCMC run.
+\end{itemize}
+
+\subsection{dnest4}
+DNest4 produces some files about the sampler's history.  All are saved into 
+`outputdir` EXCEPT for sampler\_state.txt, which is saved into the directory 
+where LISA was executed from.  For more details, see the DNest4 code/docs.
+
+\subsection{multinest}
+\begin{itemize}
+\item marginals\_multinest.png: plot of the 1D marginalized posteriors produced 
+                               by multinest.
+\end{itemize}
+\noindent Additionally, a subdirectory containing the files necessary to resume 
+the run as well as summary plots and files is created (default is pmn/).  For 
+more details, see the MultiNest/PyMultiNest docs.
+
+\subsection{polychord}
+\begin{itemize}
+\item MCMC.log: text file with statistics about the MCMC run.
+\end{itemize}
+
+\subsection{ultranest}
+UltraNest's output gets saved into a subdirectory named `run` followed by a 
+number.  It contains a log file, chain histories, summary files, and plots. 
+For more details, see UltraNest's docs.
+
+
+\section{FAQ}
+
+This section will cover some frequently asked questions about using LISA.  
+Have a question that isn't answered below?  Please send it to the corresponding 
+author so we can add it to this section! \newline
+
+\noindent \textbf{Q: What is effective sample size (ESS) and why should I care?}
+A: As Bayesian samplers explore a phase space, the subsequent sets of parameters
+are based in part on earlier sets of parameters.  Thus, iterations are 
+correlated.  After some number of samples, new iterations will ``forget'' some 
+of the earlier samples.  Yet, we are really interested in the number of 
+independent samples, as that will inform how thoroughly the phase space has 
+been explored (taking a bunch of correlated samples doesn't give us much new 
+information!).  The number of iterations necessary before a new sample is 
+independent of a given earlier sample (steps per effective independent sample, 
+SPEIS) informs the ESS.  For example, if we have 20,000 samples, but a given 
+sample is correlated with the previous 100 samples, then the ESS is just 
+20000 / 100, or 200.  The ESS value, in turn, informs us of the accuracy of 
+a credible region determined from the posterior distribution.  Without 
+providing a detailed proof (interested readers can find it in Harrington et 
+al. 2021, Appendix A), the relationship between the ESS, a credible region 
+\math{\hat{C}}, and the uncertainty on the credible region 
+\math{s\sb{\hat{C}}} is
+\begin{equation}
+{\rm ESS} \approx \frac{\hat{C}(1-\hat{C})}{s\sbp{\hat{C}}{2}}.
+\end{equation}
+Thus, for a 0.5\% uncertainty on the 95.45\% region (2\math{\sigma} for a 
+Gaussian), an ESS \math{\approx} 1700 is required.  A SPEIS of 1000 would 
+thus require 1.7 million iterations!
+
+
+\section{Be Kind}
+\label{sec:bekind}
+Please note that this software has not been officially released yet; see the 
+license for some restrictions on its usage prior to release.  Upon release, 
+we will add the relevant citation here, with a Bibtex entry.
+
+\noindent Thanks!
+
+% \section{Further Reading}
+% \label{sec:furtherreading}
+
+% TBD: Add papers here.
+
+
+\end{document}

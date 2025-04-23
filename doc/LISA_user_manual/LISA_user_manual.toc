@@ -1,0 +1,23 @@
+\contentsline {section}{\numberline {1}Team Members}{2}{section.1}%
+\contentsline {section}{\numberline {2}Introduction}{2}{section.2}%
+\contentsline {section}{\numberline {3}Installation}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}System Requirements}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Install and Compile}{3}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Example}{4}{section.4}%
+\contentsline {section}{\numberline {5}Program Inputs}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Sampling Algorithm}{5}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}demc \& snooker}{5}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}dream}{6}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}dnest4}{7}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}dynesty, multinest, polychord, \& ultranest}{8}{subsubsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.2}Parameter Dictionary}{9}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Program Outputs}{12}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Returns}{12}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Output Files}{12}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}demc \& snooker}{13}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}dnest4}{13}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}multinest}{13}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}polychord}{13}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}ultranest}{13}{subsection.6.7}%
+\contentsline {section}{\numberline {7}FAQ}{13}{section.7}%
+\contentsline {section}{\numberline {8}Be Kind}{14}{section.8}%
