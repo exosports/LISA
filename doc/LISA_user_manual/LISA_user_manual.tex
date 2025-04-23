@@ -340,6 +340,7 @@ so users are encouraged to experiment with them.
 \item dlogz
 \item dumper
 \item fbestp
+\item fcheckpoint (only dynesty)
 \item fext
 \item frac\_remain (only ultranest)
 \item fprefix (only multinest)
@@ -390,6 +391,10 @@ To utilize default values, do not include it in **kwargs.
                         during the inference.  Default: None
 \item fbestp : str. Filename for array of best-fit parameters.  
                     Must be NPY file.
+\item fcheckpoint: str. Dynesty only.  Path to save checkpoint file 
+                        to allow for resuming the run.  If a relative path, 
+                        assumes it is relative to `outputdir`.  
+                        Default: dynesty.save, located in `outputdir`
 \item fext : str. File extension for saved plots.  
                   Options: .png, .pdf  Default: .png
 \item flog : str. MCMCs only. /path/to/log file to save out.  

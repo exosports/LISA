@@ -3,8 +3,8 @@
 ===============================================================================
 
 
-Author :       Michael D. Himes    University of Central Florida
-Contact:       mhimes@knights.ucf.edu
+Author :       Michael D. Himes    Morgan State University / NASA GSFC
+Contact:       michael.d.himes@nasa.gov
 
 Advisor:       Joseph Harrington   University of Central Florida
 
@@ -40,7 +40,7 @@ in its usage.  Users can find the latest LISA User Manual at
 https://exosports.github.io/LISA/doc/LISA_User_Manual.html.
 
 LISA is an open-source project that welcomes improvements from the community 
-to be submitted via pull requests on Github.  To be accepted, such improvements 
+to be submitted via pull requests on GitHub.  To be accepted, such improvements 
 must be generally consistent with the existing coding style, and all changes 
 must be updated in associated documentation.
 

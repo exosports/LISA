@@ -72,8 +72,9 @@ def run(alg, **kwargs):
     samp : Sampler object, with the supplied **kwargs set.
     """
     samp = setup(alg, **kwargs)
-    samp.run()
-    samp.make_plots()
+    ret = samp.run()
+    if ret is not None:
+        samp.make_plots()
     return samp
 
 
