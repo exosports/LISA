@@ -48,6 +48,9 @@ class BaseSampler(object):
                             'during the inference.  Default: None', 
         'fbestp' : 'str. Filename for array of best-fit parameters. ' + \
                    'Must be NPY file.', 
+        'fcheckpoint' : 'str. Dynesty only.  Path to save checkpoint file ' + \
+                        'to allow for resuming the run.  If a relative path, ' + \
+                        'assumes it is relative to `outputdir`.', 
         'fext' : 'str. File extension for saved plots. ' + \
                       'Options: .png, .pdf  Default: .png', 
         'flog' : 'str. DEMC and snooker only. /path/to/log file to save out. ' + \

@@ -20,7 +20,7 @@ class Sampler(BaseSampler):
                        loglike=None, min_ess=500, model=None, nchains=1, 
                        niter=None, nlive=500, nlive_batch=500, outputdir=None, 
                        pnames=None, prior=None, pstep=None, sample='auto', 
-                       truepars=None, verb=0):
+                       truepars=None, fcheckpoint='dynesty.save', resume=False, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -33,7 +33,7 @@ class Sampler(BaseSampler):
                        'prior', 'pstep'] #required parameters
         self.optpar = ['bound', 'dlogz', 'fbestp', 'fext', 'fsavefile', 
                        'kll', 'min_ess', 'niter', 'pnames', 'sample', 
-                       'truepars', 'verb'] #optional parameters
+                       'truepars', 'fcheckpoint', 'resume', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
                          for key in self.reqpar+self.optpar}
@@ -57,6 +57,8 @@ class Sampler(BaseSampler):
         self.pstep       = pstep
         self.sample      = sample
         self.truepars    = truepars
+        self.fcheckpoint = fcheckpoint
+        self.resume      = resume
         self.verb        = verb
         if self.verb:
             print("dynesty sampler initialized")
@@ -89,6 +91,10 @@ class Sampler(BaseSampler):
             # Now update paths based on that, if needed
             self.update_path('fbestp')
             self.update_path('fsavefile')
+            self.update_path('fcheckpoint')
+            if not self.resume and os.path.exists(self.fcheckpoint):
+                print("Resume is set to False, but the specified checkpoint file already exists.")
+                self.unprepared += 1
         # Ensure proper pnames exist as numpy array
         self.check_pnames()
         # Ready to run?
@@ -110,6 +116,11 @@ class Sampler(BaseSampler):
             ndim = np.sum(self.pstep > 0)
             if self.nchains > 1:
                 p = mp.Pool(self.nchains)
+                queue_size = self.nchains
+            else:
+                p = None
+                queue_size = 1
+            if not self.resume:
                 dy = dynesty.DynamicNestedSampler(self.loglike, 
                                                   self.prior, 
                                                   ndim, 
@@ -118,17 +129,15 @@ class Sampler(BaseSampler):
                                                   queue_size=self.nchains, 
                                                   pool=p)
             else:
-                dy = dynesty.DynamicNestedSampler(self.loglike, 
-                                                  self.prior, 
-                                                  ndim, 
-                                                  bound=self.bound, 
-                                                  sample=self.sample)
+                dy = dynesty.NestedSampler.restore(self.fcheckpoint, pool=p)
 
             # Run it
             dy.run_nested(nlive_init=self.nlive, 
                           nlive_batch=self.nlive_batch, 
                           maxiter=self.niter, dlogz_init=self.dlogz, 
-                          n_effective=self.min_ess)
+                          n_effective=self.min_ess, 
+                          checkpoint_file=self.fcheckpoint, 
+                          resume=self.resume)
             results = dy.results
 
             # Posterior and best parameters
