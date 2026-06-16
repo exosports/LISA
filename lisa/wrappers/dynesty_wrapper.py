@@ -5,6 +5,7 @@ Sampler: class to setup and run an inference
 """
 
 import sys, os
+import json
 import multiprocess as mp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,8 +20,10 @@ class Sampler(BaseSampler):
                        fext='.png', fsavefile='output.npy', kll=None, 
                        loglike=None, min_ess=500, model=None, nchains=1, 
                        niter=None, nlive=500, nlive_batch=500, outputdir=None, 
-                       pnames=None, prior=None, pstep=None, sample='auto', 
-                       truepars=None, fcheckpoint='dynesty.save', resume=False, verb=0):
+                       pnames=None, prior=None, pstep=None, 
+                       periodic=None, reflective=None, sample='auto', 
+                       truepars=None, fcheckpoint='dynesty.save', fresults='results.json',
+                       resume=False, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
         obj.help('parameter'), or see the description in the user manual.
@@ -32,7 +35,8 @@ class Sampler(BaseSampler):
         self.reqpar = ['loglike', 'model', 'nlive', 'nlive_batch', 'outputdir', 
                        'prior', 'pstep'] #required parameters
         self.optpar = ['bound', 'dlogz', 'fbestp', 'fext', 'fsavefile', 
-                       'kll', 'min_ess', 'niter', 'pnames', 'sample', 
+                       'kll', 'min_ess', 'niter', 'pnames', 
+                       'periodic', 'reflective', 'sample', 
                        'truepars', 'fcheckpoint', 'resume', 'verb'] #optional parameters
         # Only keep help entries relevant to this algorithm
         self.helpinfo = {key : self.helpinfo[key] 
@@ -55,9 +59,12 @@ class Sampler(BaseSampler):
         self.pnames      = pnames
         self.prior       = prior
         self.pstep       = pstep
+        self.periodic    = periodic
+        self.reflective  = reflective
         self.sample      = sample
         self.truepars    = truepars
         self.fcheckpoint = fcheckpoint
+        self.fresults    = fresults
         self.resume      = resume
         self.verb        = verb
         if self.verb:
@@ -92,11 +99,32 @@ class Sampler(BaseSampler):
             self.update_path('fbestp')
             self.update_path('fsavefile')
             self.update_path('fcheckpoint')
+            self.update_path('fresults')
             if not self.resume and os.path.exists(self.fcheckpoint):
                 print("Resume is set to False, but the specified checkpoint file already exists.")
                 self.unprepared += 1
         # Ensure proper pnames exist as numpy array
         self.check_pnames()
+        # Check periodic/reflective are valid
+        for attr_name in ["periodic", "reflective"]:
+            attr_value = getattr(self, attr_name)
+            if attr_value is not None:
+                if not isinstance(attr_value, list):
+                    if isinstance(attr_value, np.ndarray):
+                        setattr(self, attr_name, attr_value.astype(int).tolist())
+                    else:
+                        print(f"{attr_name} must be a list or array of indices, but it is type {type(attr_value)}.")
+                        self.unprepared += 1
+                    continue
+                minp = np.amin(attr_value)
+                maxp = np.amax(attr_value)
+                if minp < 0:
+                    print(f"{attr_name} must be indices >= 0. Received minimum of {minp}.")
+                    self.unprepared += 1
+                if maxp >= len(self.pnames):
+                    print(f"{attr_name} must be indices < the number of parameters. "
+                          f"Received maximum of {maxp}, but there are {len(self.pnames)} parameters.")
+                    self.unprepared += 1
         # Ready to run?
         if self.unprepared:
             print("Correct the", self.unprepared, 
@@ -126,6 +154,8 @@ class Sampler(BaseSampler):
                                                   ndim, 
                                                   bound=self.bound, 
                                                   sample=self.sample, 
+                                                  periodic=self.periodic,
+                                                  reflective=self.reflective,
                                                   queue_size=self.nchains, 
                                                   pool=p)
             else:
@@ -139,6 +169,9 @@ class Sampler(BaseSampler):
                           checkpoint_file=self.fcheckpoint, 
                           resume=self.resume)
             results = dy.results
+            with open(self.fresults, "w") as f:
+                json.dump(results, f, indent=4)
+            print(results.summary())
 
             # Posterior and best parameters
             self.bestp = results["samples"][np.argmax(results["logl"])]
@@ -176,5 +209,3 @@ class Sampler(BaseSampler):
             if self.verb:
                 print("Sampler is not fully prepared to run. " + \
                       "Correct the above errors and try again.")
-
-
