@@ -115,6 +115,7 @@ class BaseSampler(object):
                          "reliability of the algorithm.  Default: None " + \
                          "(uses polychord's default of 5*ndims)", 
         'outputdir' : 'str. path/to/directory where output will be saved.', 
+        'periodic' : 'list of ints. dynesty only. Indices that are periodic.',
         'perturb' : 'object. DNest4 only. Function that proposes changes ' + \
                             'to parameter values.',  
         'pinit' : 'array, Numpy binary. For MCMCs, initial parameters for ' + \
@@ -136,6 +137,8 @@ class BaseSampler(object):
                          'automatically adjusted.  For nested sampling ' + \
                          'algorithms, only used to determine constant ' + \
                          'parameters.', 
+        'reflective' : 'list of ints. dynesty only. Indices allowed to ' + \
+                                     'reflect off boundaries.',
         'resample' : 'float. DNest4 only. Must be non-negative.  ' + \
                          'If >0, corresponds to a factor affecting the ' + \
                          'number of draws from the posterior.  If 0, no ' + \
