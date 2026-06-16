@@ -5,10 +5,10 @@ Sampler: class to setup and run an inference
 """
 
 import sys, os
-import json
 import multiprocess as mp
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 
 import dynesty
 
@@ -22,7 +22,7 @@ class Sampler(BaseSampler):
                        niter=None, nlive=500, nlive_batch=500, outputdir=None, 
                        pnames=None, prior=None, pstep=None, 
                        periodic=None, reflective=None, sample='auto', 
-                       truepars=None, fcheckpoint='dynesty.save', fresults='results.json',
+                       truepars=None, fcheckpoint='dynesty.save', fresults='results.pkl',
                        resume=False, verb=0):
         """
         For details on the inputs, instantiate an object `obj` and call 
@@ -169,8 +169,8 @@ class Sampler(BaseSampler):
                           checkpoint_file=self.fcheckpoint, 
                           resume=self.resume)
             results = dy.results
-            with open(self.fresults, "w") as f:
-                json.dump(results, f, indent=4)
+            with open(self.fresults, "wb") as f:
+                pickle.dump(results, f)
             print(results.summary())
 
             # Posterior and best parameters
