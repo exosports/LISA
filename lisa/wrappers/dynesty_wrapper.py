@@ -110,8 +110,11 @@ class Sampler(BaseSampler):
             attr_value = getattr(self, attr_name)
             if attr_value is not None:
                 if not isinstance(attr_value, list):
-                    print(f"{attr_name} must be a list of indices, but it is type {type(attr_value)}.")
-                    self.unprepared += 1
+                    if isinstance(attr_value, np.ndarray):
+                        setattr(self, attr_name, attr_value.astype(int).tolist())
+                    else:
+                        print(f"{attr_name} must be a list or array of indices, but it is type {type(attr_value)}.")
+                        self.unprepared += 1
                     continue
                 minp = np.amin(attr_value)
                 maxp = np.amax(attr_value)
@@ -206,4 +209,3 @@ class Sampler(BaseSampler):
             if self.verb:
                 print("Sampler is not fully prepared to run. " + \
                       "Correct the above errors and try again.")
-
