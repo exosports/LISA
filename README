@@ -1,0 +1,175 @@
+                                LISA
+             Large-selection Interface for Sampling Algorithms
+===============================================================================
+
+
+Author :       Michael D. Himes    Morgan State University / NASA GSFC
+Contact:       michael.d.himes@nasa.gov
+
+Advisor:       Joseph Harrington   University of Central Florida
+
+Contributors:  
+
+
+Acknowledgements
+----------------
+This research was supported by the NASA Fellowship Activity under NASA Grant 
+80NSSC20K0682.  We gratefully thank Nvidia Corporation for the Titan Xp GPU 
+that was used throughout development of the software.
+
+
+Summary
+=======
+LISA provides an interface for a variety of sampling algorithms.  Currently, 
+the following sampling methods are available:
+    DE-MC (ter Braak 2006), via a fork (https://github.com/mdhimes/mc3/tree/mpi)
+                            of MC3 (https://github.com/pcubillos/mc3)
+    DE-MC with snooker updates (ter Braak & Vrugt 2008), via MC3 fork
+    DNest4 (Brewer & Foreman-Mackey 2018)
+    DREAM with snooker updates and multi-try (Laloy & Vrugt 2012), via PyDREAM 
+                                           (https://github.com/LoLab-VU/PyDREAM)
+    dynesty (Speagle 2019; https://github.com/joshspeagle/dynesty)
+    MULTINEST (Feroz et al. 2009), via PyMultiNest (Buchner et al. 2014; 
+                                 https://github.com/JohannesBuchner/PyMultiNest)
+    PolyChord (Handley et al. 2015a, 2015b; 
+               https://github.com/PolyChord/PolyChordLite)
+    UltraNest (Buchner 2014, 2019; https://github.com/JohannesBuchner/UltraNest)
+
+LISA comes with complete documentation as well as a user manual to assist 
+in its usage.  Users can find the latest LISA User Manual at 
+https://exosports.github.io/LISA/doc/LISA_User_Manual.html.
+
+LISA is an open-source project that welcomes improvements from the community 
+to be submitted via pull requests on GitHub.  To be accepted, such improvements 
+must be generally consistent with the existing coding style, and all changes 
+must be updated in associated documentation.
+
+LISA is released under the Reproducible Research Software License.  Users are 
+free to use the software for personal reasons.  Users publishing results from 
+LISA or modified versions of it in a peer-reviewed journal are required to 
+publicly release all necessary code/data to reproduce the published work.  
+Modified versions of LISA are required to also be released open source under 
+the same Reproducible Research License.  For more details, see the text of the 
+license.
+
+
+Files & Directories
+===================
+LISA contains various files and directories, described here.
+
+doc/            - Contains documentation for LISA.  The User Manual contains 
+                  the information in the README with more detail, as well as a 
+                  walkthrough for setup and running an example.
+environment.yml - Contains the required packages for LISA.
+example/        - Contains examples of executing LISA.
+LICENSE         - Contains the text of the sfotware's license.
+lisa/           - Contains the LISA package.
+  __init__.py   - Contains the main functions to use LISA.
+  modules/      - Contains submodules for some sampling algorithms.
+    MCcubed     - MC3 package.
+    PolyChordLite - polychord's public release on Github.
+  _version.py   - Tracks the code's version.
+  wrappers/     - Contains wrappers for the sampling algorithms.
+    helper.py   - Contains the parent class for samplers.
+Makefile        - Handles building MC3.
+README          - This file!
+setup.py        - Used to install the package.
+
+
+Note that all .py files have complete documentation; consult a specific file 
+for more details.
+
+
+Installation
+============
+To build the supplied conda environment, enter 
+    conda env create -f environment.yml
+and activate it:
+    conda activate lisa
+
+On some systems, this approach may fail.  For a more robust approach that 
+requires additional steps, enter
+    conda create -n lisa python=3.7.2
+    conda activate lisa
+    conda env update --file environment.yml
+This will build a base Python 3.7.2 environment, activate it, and then update 
+it with the packages necessary to run LISA.
+
+Mac users may need to install additional tools:
+    xcode-select --install
+This installs make, gcc, git, and other utilities needed.
+
+Now, install LISA:
+    python setup.py install
+This will compile required submodules and build an importable package.
+
+To check that everything installed properly, start up a Python session and try 
+    import lisa
+If it succeeds without warnings about missing MultiNest files, 
+you are now ready to use LISA!
+
+
+Executing LISA
+===============
+LISA is designed to be imported into existing projects.  LISA provides two 
+functions for usage: setup instantiates a sampler, while run performs setup, 
+runs the inference, and produces posterior plots.  For example,
+    import lisa
+    sampler = lisa.setup('demc')
+will set up a DEMC sampler object.  Users would then need to specify required 
+parameters, such as the data, uncertainties, phase space, etc.  For a list of 
+the required parameters,
+    print(sampler.reqpar)
+These parameters are attributes of the sampler object, and must be set to 
+execute the inference.  For example, if my data were y = x from 0 through 9, 
+    sampler.data = np.arange(10)
+Optional parameters are also available.  View those via
+    print(sampler.optpar)
+To get more information about some parameter P, there are two options:
+    sampler.help('P')
+    print(sampler.helpinfo['P'])
+
+Once all required parameters are specified, execute the inference via
+    sampler.run()
+If the sampler object is not properly set up, LISA will print to terminal 
+the issues that must be corrected, provided that the `verb` parameter is at 
+least 1.  After fixing them, call the run() method as before.
+
+To make plots of the posterior, enter
+    sampler.make_plots()
+
+Alternatively, if users already know what parameters to include, 
+    sampler = lisa.run(algorithm, keyword1=parameter1, keyword2=parameter2, ...)
+If a required parameter is missing, users can follow the above instructions 
+for adding the required parameters, run it, and produce plots.
+
+For more examples of how to incorporate LISA into your project, see the 
+example/ directory.
+
+
+Versions
+========
+LISA was developed on a Unix/Linux machine using the following 
+versions of packages:
+ - Python 3.7.2
+ - Numpy 1.16.2
+ - Matplotlib 3.0.2
+ - mpi4py 3.0.3
+ - Scipy 1.5.3
+ - h5py 2.9.0
+ - MULTINEST 3.10
+ - PyMultiNest 2.10
+ - UltraNest 2.2.2
+ - dynesty 1.0.1
+ - dnest4 0.2.4
+ - PyDREAM 2.0.0
+
+
+Be kind
+=======
+Please note that this software has not been officially released yet; see the 
+license for some restrictions on its usage prior to release.  Upon release, 
+we will add the relevant citation here, with a Bibtex entry.
+
+Thanks!
+
